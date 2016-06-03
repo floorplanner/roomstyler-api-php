@@ -1,17 +1,26 @@
 <?php
+  require_once 'lib/roomstyler_request.php';
+
   class RoomstylerApi {
     private $_settings = [
       'host' => 'roomstyler.com',
       'prefix' => 'api',
+      'protocol_param' => '_method',
       'key' => NULL,
       'token' => NULL
     ];
 
-    public function __construct($key, $token) {
-      $this->_settings['key'] = $key;
-      $this->_settings['token'] = $token;
+    public function __construct($settings) {
+      foreach ($this->_settings as $setting => $value) {
+        if (array_key_exists($setting, $settings)) {
+          $this->_settings[$setting] = $settings[$setting];
+        }
+      }
+      return $this;
+    }
 
-      pp($this->_settings);
+    public function get_settings() {
+      return $this->_settings;
     }
   }
 ?>
