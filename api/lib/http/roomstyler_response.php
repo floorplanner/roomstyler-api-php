@@ -1,17 +1,19 @@
 <?php
   class RoomstylerResponse {
+    private $type;
     private $path;
+    private $full_path;
     private $arguments;
     private $method;
     private $status;
     private $body;
+    private $error;
 
     public function __construct(array $data = []) {
-      foreach ($data as $prop => $val) {
-        if (property_exists('RoomstylerResponse', $prop)) {
-          $this->$prop = $val;
-        }
-      }
+      foreach ($data as $prop => $val)
+        if (property_exists('RoomstylerResponse', $prop)) $this->$prop = $val;
+
+      return $this;
     }
 
     public function path() {
