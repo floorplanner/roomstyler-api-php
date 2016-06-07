@@ -8,6 +8,8 @@
   require_once 'lib/models/room.php';
   require_once 'lib/models/room_render.php';
   require_once 'lib/models/category.php';
+  require_once 'lib/models/component.php';
+  require_once 'lib/models/material.php';
 
   require_once 'lib/methods/method_base.php';
   require_once 'lib/methods/user.php';
@@ -15,6 +17,8 @@
   require_once 'lib/methods/room.php';
   require_once 'lib/methods/room_render.php';
   require_once 'lib/methods/category.php';
+  require_once 'lib/methods/component.php';
+  require_once 'lib/methods/material.php';
 
   class RoomstylerApi {
 
