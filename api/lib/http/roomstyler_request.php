@@ -20,21 +20,23 @@
       self::$_settings = $arr;
     }
 
-    public static function send($path, array $args = [], $method = self::GET) {
+    public static function send($type, $path, array $args = [], $method = self::GET) {
       $mtd = self::fallback_method($method);
       $compiled_args = self::build_arg_array($args, $mtd);
       $url = self::build_url($path, $method == self::GET ? $compiled_args : []);
       $res = self::curl_fetch($url, $compiled_args, $method);
 
-      return new RoomstylerResponse([
-        'type' => NULL,
-        'path' => $path,
-        'full_path' => $url,
-        'arguments' => $compiled_args,
-        'method' => $mtd[0],
-        'status' => NULL,
-        'body' => $res['body'],
-        'error' => $res['error']]);
+      return [
+        'result' => new $type($res['body']),
+        'request_params' => new RoomstylerResponse([
+          'type' => $type,
+          'path' => $path,
+          'full_path' => $url,
+          'arguments' => $compiled_args,
+          'method' => $mtd[0],
+          'status' => NULL,
+          'body' => $res['body'],
+          'error' => $res['error']])];
     }
 
     private static function build_arg_array($args, $mtd) {
@@ -93,6 +95,7 @@
 
       $body = curl_exec($curl);
       if ($body) $body = json_decode($body);
+      if (count($body) == 1) $body = array_shift($body);
 
       $curl_info = curl_getinfo($curl);
 
