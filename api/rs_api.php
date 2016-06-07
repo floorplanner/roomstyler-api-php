@@ -4,18 +4,20 @@
   require_once 'lib/models/model_base.php';
   require_once 'lib/models/user.php';
   require_once 'lib/models/product.php';
+  require_once 'lib/models/contest.php';
   require_once 'lib/models/room.php';
   require_once 'lib/models/room_render.php';
   require_once 'lib/models/category.php';
 
   require_once 'lib/methods/method_base.php';
   require_once 'lib/methods/user.php';
-  require_once 'lib/methods/product.php';
+  require_once 'lib/methods/contest.php';
   require_once 'lib/methods/room.php';
   require_once 'lib/methods/room_render.php';
   require_once 'lib/methods/category.php';
 
   class RoomstylerApi {
+
     private $_settings = [
       'protocol' => 'https',
       'host' => 'roomstyler.com',
@@ -38,28 +40,8 @@
     }
 
     public function __get($prop) {
-      switch ($prop) {
-        case 'users':
-        case 'user':
-          return new RoomstylerUserMethods($this->_settings['debug']);
-        break;
-        case 'rooms':
-        case 'room':
-          return new RoomstylerRoomMethods($this->_settings['debug']);
-        break;
-        case 'products':
-        case 'product':
-          return new RoomstylerProductMethods($this->_settings['debug']);
-        break;
-        case 'renders':
-        case 'render':
-          return new RoomstylerRoomRenderMethods($this->_settings['debug']);
-        break;
-        case 'categories':
-        case 'category':
-          return new RoomstylerCategoryMethods($this->_settings['debug']);
-        break;
-      }
+      $class_name = 'Roomstyler' . ucfirst(strtolower(preg_replace(['/ies$/', '/s$/'], ['y', ''], $prop))) . 'Methods';
+      return new $class_name($this->_settings['debug']);
     }
   }
 ?>

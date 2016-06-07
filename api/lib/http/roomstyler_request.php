@@ -26,21 +26,33 @@
       $url = self::build_url($path, $method == self::GET ? $compiled_args : []);
       $res = self::curl_fetch($url, $compiled_args, $method);
 
+      if ($type == NULL) return $res;
+      if (is_array($res['body'])){
+        $final_res = [];
+        if (count($res['body']) == 1)
+          $final_res[] = new $type(array_shift($res['body']));
+        else
+          foreach($res['body'] as $_ => $obj) $final_res[] = new $type($obj);
+      } else {
+        $final_res = new $type($res['body']);
+      }
+
       return [
-        'result' => new $type($res['body']),
+        'result' => $final_res,
         'request_params' => new RoomstylerResponse([
           'type' => $type,
           'path' => $path,
           'full_path' => $url,
           'arguments' => $compiled_args,
           'method' => $mtd[0],
-          'status' => NULL,
+          'status' => $res['status'],
           'body' => $res['body'],
           'error' => $res['error']])];
     }
 
     private static function build_arg_array($args, $mtd) {
-      if (array_keys($args) == range(0, count($args) - 1))
+      if (count($args) <= 0) return [];
+      if (count(array_keys($args)) !== count(range(0, count($args) - 1)))
         throw new Exception("Please pass an associative array!");
 
       $compiled_args = [];
@@ -95,12 +107,12 @@
 
       $body = curl_exec($curl);
       if ($body) $body = json_decode($body);
-      if (count($body) == 1) $body = array_shift($body);
 
       $curl_info = curl_getinfo($curl);
 
       $res = ['body' => $body,
-              'error' => ['status' => $curl_info['http_code'],
+              'status' => $curl_info['http_code'],
+              'error' => ['curl_error' => curl_errno($curl),
                           'message' => curl_error($curl)]];
 
       curl_close($curl);
