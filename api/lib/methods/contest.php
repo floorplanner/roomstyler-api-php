@@ -2,7 +2,8 @@
 
   class RoomstylerContestMethods extends RoomstylerMethodBase {
 
-    protected static function index($params = []) {
+    protected static function index($_ = NULL, $params = []) {
+      if (is_array($_)) $params = $_;
       return RoomstylerRequest::send('RoomstylerContest', "contests", $params);
     }
 

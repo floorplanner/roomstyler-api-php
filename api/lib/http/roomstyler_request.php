@@ -27,12 +27,14 @@
       $res = self::curl_fetch($url, $compiled_args, $method);
 
       if ($type == NULL) return $res;
-      if (is_array($res['body'])){
-        $final_res = [];
+      
+      if (is_array($res['body'])) {
         if (count($res['body']) == 1)
-          $final_res[] = new $type(array_shift($res['body']));
-        else
+          $final_res = new $type(array_shift($res['body']));
+        else {
+          $final_res = [];
           foreach($res['body'] as $_ => $obj) $final_res[] = new $type($obj);
+        }
       } else {
         $final_res = new $type($res['body']);
       }

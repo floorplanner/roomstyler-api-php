@@ -33,7 +33,8 @@
                                      "users/$id/collections/$collection_id/items", $params);
     }
 
-    protected static function live_boxes($params = []) {
+    protected static function live_boxes($_ = NULL, $params = []) {
+      if (is_array($_)) $params = $_;
       return RoomstylerRequest::send('RoomstylerUser', "users/liveboxes", $params);
     }
 
