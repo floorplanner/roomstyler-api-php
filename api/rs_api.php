@@ -27,6 +27,7 @@
     private $_settings = [
       'protocol' => 'https',
       'whitelabel' => NULL,
+      'password' => NULL,
       'host' => 'roomstyler.com',
       'prefix' => 'api',
       'method_param' => '_method',
@@ -34,6 +35,7 @@
       'token' => NULL,
       'timeout' => 2,
       'connect_timeout' => 30,
+      'request_headers' => ['Content-Type: application/json'],
       'debug' => false];
 
     public function __construct($settings) {

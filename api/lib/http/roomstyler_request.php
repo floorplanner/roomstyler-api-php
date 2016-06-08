@@ -79,13 +79,12 @@
       $base_path = self::$_settings['protocol'] . '://';
       if (self::$_settings['whitelabel']) $base_path .= self::$_settings['whitelabel'] . '.';
       if (self::$_settings['host']) $base_path .= self::$_settings['host'] . '/';
-      if (self::$_settings['prefix']) $base_path .= self::$_settings['prefix'] . '/';
+      if (self::$_settings['prefix']) $base_path .= self::$_settings['prefix'];
       $url = $base_path . '/' . $path;
 
       if ($args) {
         $query = [];
-        foreach ($args as $key => $value)
-          $query[] = $key . '=' . $value;
+        foreach ($args as $key => $value) $query[] = $key . '=' . $value;
 
         return ($url . '?' . join('&', $query));
       }
@@ -103,10 +102,22 @@
         CURLOPT_RETURNTRANSFER => 1,
         CURLOPT_URL => $url,
         CURLOPT_POST => ($mtd == self::POST),
+        CURLOPT_HTTPHEADER => self::$_settings['request_headers'],
         CURLOPT_CONNECTTIMEOUT => self::$_settings['connect_timeout'],
         CURLOPT_TIMEOUT => self::$_settings['timeout'],
         CURLOPT_USERAGENT => self::$_settings['user_agent']]);
 
+      # request authentication through http basic
+      list($uname, $upass) = [self::$_settings['whitelabel'],
+                              self::$_settings['password']];
+
+      if (!empty($uname) && !empty($upass)) {
+        curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+        curl_setopt($curl, CURLOPT_USERPWD, $uname . ':' . $upass);
+      }
+
+      # request method handling is done prior to this step.
+      # if a request needs to be post (e.g. on DELETE, PATCH etc...) it will be
       if (!empty($params) && $mtd == self::POST)
         curl_setopt($curl, CURLOPT_POSTFIELDS, $params);
 
