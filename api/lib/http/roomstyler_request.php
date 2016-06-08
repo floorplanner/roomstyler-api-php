@@ -4,7 +4,6 @@
   class RoomstylerRequest {
 
     private static $_settings = [];
-    private static $_curl = NULL;
 
     const DELETE = 'delete';
     const POST = 'post';
@@ -27,7 +26,7 @@
       $res = self::curl_fetch($url, $compiled_args, $method);
 
       if ($type == NULL) return $res;
-      
+
       if (is_array($res['body'])) {
         if (count($res['body']) == 1)
           $final_res = new $type(array_shift($res['body']));
@@ -41,13 +40,14 @@
 
       return [
         'result' => $final_res,
-        'request_params' => new RoomstylerResponse([
+        'request_info' => new RoomstylerResponse([
           'type' => $type,
           'path' => $path,
           'full_path' => $url,
           'arguments' => $compiled_args,
           'method' => $mtd[0],
           'status' => $res['status'],
+          'headers' => $res['headers'],
           'body' => $res['body'],
           'error' => $res['error']])];
     }
@@ -96,6 +96,8 @@
       $curl = curl_init();
 
       curl_setopt_array($curl, [
+        CURLINFO_HEADER_OUT => true,
+        CURLOPT_HEADER => 1,
         CURLOPT_FAILONERROR => true,
         CURLOPT_RETURNTRANSFER => 1,
         CURLOPT_URL => $url,
@@ -108,11 +110,14 @@
         curl_setopt($curl, CURLOPT_POSTFIELDS, $params);
 
       $body = curl_exec($curl);
+      $curl_info = curl_getinfo($curl);
+      $response_headers = substr($body, 0, $curl_info['header_size']);
       if ($body) $body = json_decode($body);
 
-      $curl_info = curl_getinfo($curl);
-
       $res = ['body' => $body,
+              'headers' => [
+                'request' => self::parse_header_str($curl_info['request_header']),
+                'response' => self::parse_header_str($response_headers)],
               'status' => $curl_info['http_code'],
               'error' => ['curl_error' => curl_errno($curl),
                           'message' => curl_error($curl)]];
@@ -120,6 +125,20 @@
       curl_close($curl);
 
       return $res;
+    }
+
+    private static function parse_header_str($header_str) {
+      $out = [];
+      $header_lines = preg_split('/\r\n|\n|\r/', $header_str);
+      $header_lines = array_filter($header_lines, function($value) { return strlen($value) > 0; });
+      $out['Meta-Information'] = array_shift($header_lines);
+
+      foreach ($header_lines as $line) {
+        list($key, $val) = explode(': ', $line);
+        $out[$key] = $val;
+      }
+
+      return $out;
     }
   }
 ?>

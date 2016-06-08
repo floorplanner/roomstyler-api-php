@@ -6,6 +6,7 @@
     private $arguments;
     private $method;
     private $status;
+    private $headers;
     private $body;
     private $error;
 
@@ -34,6 +35,11 @@
 
     public function body() {
       return $this->body;
+    }
+
+    public function headers($type = 'request') {
+      if ($type != 'request' || $type != 'response') $type = 'request';
+      return $this->headers[$type];
     }
 
 

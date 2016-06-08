@@ -44,8 +44,28 @@
     }
 
     public function __get($prop) {
-      $class_name = 'Roomstyler' . ucfirst(strtolower(preg_replace(['/ies$/', '/s$/'], ['y', ''], $prop))) . 'Methods';
+      $class_name = self::method_class_name($prop);
       return new $class_name($this->_settings['debug']);
+    }
+
+    protected static function method_class_name($prop) {
+      $prop = self::to_singular($prop);
+      return "Roomstyler{$prop}Methods";
+    }
+
+    protected static function model_class_name($prop) {
+      $prop = self::to_singular($prop);
+      return "Roomstyler{$prop}Model";
+    }
+
+    protected static function to_singular($prop) {
+      $prop = preg_replace(['/ies$/', '/s$/'], ['y', ''], $prop);
+      return ucfirst(strtolower($prop));
+    }
+
+    protected static function to_plural($prop) {
+      $prop = preg_replace(['/y$/', '/([^s])$/'], ['ies', '$1s'], $prop);
+      return ucfirst(strtolower($prop));
     }
   }
 ?>
