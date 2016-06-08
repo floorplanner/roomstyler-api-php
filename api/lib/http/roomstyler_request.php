@@ -109,9 +109,10 @@
       if (!empty($params) && $mtd == self::POST)
         curl_setopt($curl, CURLOPT_POSTFIELDS, $params);
 
-      $body = curl_exec($curl);
+      $raw = curl_exec($curl);
       $curl_info = curl_getinfo($curl);
-      $response_headers = substr($body, 0, $curl_info['header_size']);
+      $response_headers = substr($raw, 0, $curl_info['header_size']);
+      $body = substr($raw, $curl_info['header_size']);
       if ($body) $body = json_decode($body);
 
       $res = ['body' => $body,
