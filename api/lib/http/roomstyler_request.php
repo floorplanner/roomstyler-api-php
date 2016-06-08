@@ -76,10 +76,11 @@
     }
 
     private static function build_url($path, $args = NULL) {
-      $url = join('/', [self::$_settings['host'],
-                        self::$_settings['prefix'], $path]);
-
-      $url = self::$_settings['protocol'] . '://' . $url;
+      $base_path = self::$_settings['protocol'] . '://';
+      if (self::$_settings['whitelabel']) $base_path .= self::$_settings['whitelabel'] . '.';
+      if (self::$_settings['host']) $base_path .= self::$_settings['host'] . '/';
+      if (self::$_settings['prefix']) $base_path .= self::$_settings['prefix'] . '/';
+      $url = $base_path . '/' . $path;
 
       if ($args) {
         $query = [];

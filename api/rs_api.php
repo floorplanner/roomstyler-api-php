@@ -22,8 +22,11 @@
 
   class RoomstylerApi {
 
+    const VERSION = "1.0";
+
     private $_settings = [
       'protocol' => 'https',
+      'whitelabel' => NULL,
       'host' => 'roomstyler.com',
       'prefix' => 'api',
       'method_param' => '_method',
@@ -31,13 +34,14 @@
       'token' => NULL,
       'timeout' => 2,
       'connect_timeout' => 30,
-      'user_agent' => 'RoomstylerApi/1.0 (https://roomstyler.com)',
       'debug' => false];
 
     public function __construct($settings) {
       foreach ($this->_settings as $setting => $value)
         if (array_key_exists($setting, $settings))
           $this->_settings[$setting] = $settings[$setting];
+
+      $this->_settings['user_agent'] = $this->generate_user_agent();
 
       RoomstylerRequest::OPTIONS($this->_settings);
       return $this;
@@ -66,6 +70,12 @@
     protected static function to_plural($prop) {
       $prop = preg_replace(['/y$/', '/([^s])$/'], ['ies', '$1s'], $prop);
       return ucfirst(strtolower($prop));
+    }
+
+    protected function generate_user_agent() {
+      return join(' ', [
+        'RoomstylerApi/' . self::VERSION,
+        "({$this->_settings['protocol']}://{$this->_settings['host']})"]);
     }
   }
 ?>

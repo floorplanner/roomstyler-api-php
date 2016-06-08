@@ -8,7 +8,8 @@
 
     public function __construct($row) {
       $this->_cls = get_class($this);
-      if ($row && is_array($row)) {
+      if (is_object($row)) $row = get_object_vars($row);
+      if (is_array($row)) {
         foreach ($row as $field => $value) $this->$field = $value;
         $this->_fields_set = true;
       }
