@@ -3,7 +3,9 @@
   ini_set('display_errors', 1);
   error_reporting(E_ALL);
 
-  require 'user.php';
+  # this file contains the $CONFIG definition and is excluded in .gitignore
+  require 'config.php';
+
   require 'helpers.php';
   require 'api/rs_api.php';
 
