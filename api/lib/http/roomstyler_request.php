@@ -27,14 +27,15 @@
 
     public static function send($type, $path, array $args = [], $method = self::GET) {
       $mtd = self::fallback_method($method);
-      $compiled_args = self::build_arg_array($args, $mtd);
+      $compiled_args = $method == self::GET ? self::build_arg_array($args, $mtd) : $args;
       $url = self::build_url($path, $method == self::GET ? $compiled_args : []);
       $res = self::curl_fetch($url, $compiled_args, $method);
 
       if ($type == NULL) return $res;
 
-      $final_res = self::collection_from_response($type, $res['body']);
+      $final_res = self::collection_from_response($type, $res);
 
+      if (!self::$_settings['debug']) return $final_res;
       return [
         'result' => $final_res,
         'request_info' => new RoomstylerResponse([
@@ -46,15 +47,17 @@
           'status' => $res['status'],
           'headers' => $res['headers'],
           'body' => $res['body'],
-          'error' => $res['error']])];
+          'errors' => $res['errors']])];
     }
 
-    private static function collection_from_response($type, &$res, $store = false) {
+    private static function collection_from_response($type, $res, $store = false) {
       # check if JSON response root node contains a property (either plural or singular) for what we're trying to fetch
       # if found, reassign $res to this property and continue creating collection
       $plural_type = parent::to_plural(strtolower(str_replace('Roomstyler', '', $type)));
       $singular_type = strtolower(str_replace('Roomstyler', '', $type));
       $out = [];
+      $errors = $res['errors'];
+      $res = $res['body'];
 
       if (is_object($res))
         if (property_exists($res, $plural_type)) $res = $res->$plural_type;
@@ -63,9 +66,9 @@
       # if result is an array then we want to return an array of wrapped objects
       if (is_array($res))
         # if the count is only one, there's probably a root node wrapping the data
-        if (count($res) == 1) $out = new $type(array_shift($res));
-        else foreach($res as $_ => $obj) $out[] = new $type($obj);
-      else $out = new $type($res);
+        if (count($res) == 1) $out = new $type(array_shift($res), $errors);
+        else foreach($res as $_ => $obj) $out[] = new $type($obj, $errors);
+      else $out = new $type($res, $errors);
       return $out;
     }
 
@@ -108,10 +111,8 @@
       curl_setopt_array($curl, [
         CURLINFO_HEADER_OUT => true,
         CURLOPT_HEADER => 1,
-        CURLOPT_FAILONERROR => true,
         CURLOPT_RETURNTRANSFER => 1,
         CURLOPT_URL => $url,
-        CURLOPT_POST => ($mtd == self::POST),
         CURLOPT_HTTPHEADER => self::$_settings['request_headers'],
         CURLOPT_CONNECTTIMEOUT => self::$_settings['connect_timeout'],
         CURLOPT_TIMEOUT => self::$_settings['timeout'],
@@ -127,21 +128,27 @@
 
       # request method handling is done prior to this step.
       # if a request needs to be post (e.g. on DELETE, PATCH etc...) it will be
-      if (!empty($params) && $mtd == self::POST) curl_setopt($curl, CURLOPT_POSTFIELDS, $params);
+      if (!empty($params) && $mtd == self::POST) {
+        curl_setopt($curl, CURLOPT_POST, 1);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($params));
+      }
 
       $raw = curl_exec($curl);
       $curl_info = curl_getinfo($curl);
+      $http_status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
       $response_headers = substr($raw, 0, $curl_info['header_size']);
       $body = substr($raw, $curl_info['header_size']);
-      if ($body) $body = json_decode($body);
+      $errors = [];
+
+      if ($body && $http_status < 400) $body = json_decode($body);
+      else $errors = json_decode($body, true);
 
       $res = ['body' => $body,
               'headers' => [
                 'request' => self::parse_header_str($curl_info['request_header']),
                 'response' => self::parse_header_str($response_headers)],
-              'status' => $curl_info['http_code'],
-              'error' => ['curl_error' => curl_errno($curl),
-                          'message' => curl_error($curl)]];
+              'status' => $http_status,
+              'errors' => $errors];
 
       curl_close($curl);
 
@@ -152,11 +159,11 @@
       $out = [];
       $header_lines = preg_split('/\r\n|\n|\r/', $header_str);
       $header_lines = array_filter($header_lines, function($value) { return strlen($value) > 0; });
-      $out['HTTP'] = array_shift($header_lines);
 
       foreach ($header_lines as $line) {
-        list($key, $val) = explode(': ', $line);
-        $out[$key] = $val;
+        $split_header = explode(': ', $line);
+        if (count($split_header) == 1) $out['HTTP'][] = $split_header[0];
+        else $out[$split_header[0]] = $split_header[1];
       }
 
       return $out;

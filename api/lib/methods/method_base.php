@@ -5,17 +5,13 @@
     private $_debug;
     private $_cls;
 
-    public function __construct($debug = false) {
-      $this->_debug = $debug;
+    public function __construct() {
       $this->_cls = get_class($this);
     }
 
     public function __call($method, $args) {
-      if (method_exists($this, $method)) {
-        $req = call_user_func_array("$this->_cls::$method", $args);
-        if ($this->_debug == true) return $req;
-        return $req['result'];
-      } else trigger_error('Call to undefined method '.__CLASS__.'::'.$method.'()', E_USER_ERROR);
+      if (method_exists($this, $method)) return call_user_func_array("$this->_cls::$method", $args);
+      else trigger_error('Call to undefined method '.__CLASS__.'::'.$method.'()', E_USER_ERROR);
     }
 
   }

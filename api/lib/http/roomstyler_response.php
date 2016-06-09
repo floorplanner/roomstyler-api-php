@@ -9,11 +9,22 @@
     private $status;
     private $headers;
     private $body;
-    private $error;
+    private $errors;
+
+    private $successful = false;
 
     public function __construct(array $data = []) {
       foreach ($data as $prop => $val) if (property_exists($this, $prop)) $this->$prop = $val;
+      if (empty($this->errors)) $this->successful = true;
       return $this;
+    }
+
+    public function successful() {
+      return $this->successful;
+    }
+
+    public function errors() {
+      return $this->errors;
     }
 
     public function path() {

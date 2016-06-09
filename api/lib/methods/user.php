@@ -29,6 +29,10 @@
                                      "users/$id/collections/$collection_id/items", $params);
     }
 
+    protected static function create($params) {
+      return RoomstylerRequest::send('RoomstylerUser', "users", ['user' => $params], RoomstylerRequest::POST);
+    }
+
   }
 
 ?>
