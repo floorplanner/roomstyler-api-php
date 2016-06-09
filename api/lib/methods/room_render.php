@@ -1,7 +1,5 @@
 <?php
 
-  class RoomstylerRoomRenderMethods extends RoomstylerMethodBase {
-
-  }
+  class RoomstylerRoomRenderMethods extends RoomstylerMethodBase {}
 
 ?>

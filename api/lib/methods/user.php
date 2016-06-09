@@ -11,30 +11,22 @@
       return RoomstylerRequest::send('RoomstylerUser', "users/$id/token", $params);
     }
 
-    protected static function profile($id, $params = []) {
-      return RoomstylerRequest::send('RoomstylerUser', "users/$id/profile", $params);
-    }
-
     protected static function loved_rooms($id, $params = []) {
-      return RoomstylerRequest::send('RoomstylerUser', "users/$id/rooms_loved", $params);
+      return RoomstylerRequest::send('RoomstylerRoom', "users/$id/rooms_loved", $params);
     }
 
     protected static function collections($id, $params = []) {
-      return RoomstylerRequest::send('RoomstylerUser', "users/$id/collections", $params);
+      return RoomstylerRequest::send('RoomstylerCollection', "users/$id/collections", $params);
     }
 
     protected static function collection($id, $collection_id, $params = []) {
-      return RoomstylerRequest::send('RoomstylerUser',
+      return RoomstylerRequest::send('RoomstylerCollection',
                                      "users/$id/collections/$collection_id", $params);
     }
 
     protected static function collection_items($id, $collection_id, $params = []) {
-      return RoomstylerRequest::send('RoomstylerUser',
+      return RoomstylerRequest::send('RoomstylerCollectionItem',
                                      "users/$id/collections/$collection_id/items", $params);
-    }
-
-    protected static function live_boxes($params = []) {
-      return RoomstylerRequest::send('RoomstylerUser', "users/liveboxes", $params);
     }
 
   }

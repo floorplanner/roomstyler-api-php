@@ -5,8 +5,13 @@
 
   require_once 'lib/models/model_base.php';
   require_once 'lib/models/user.php';
+  require_once 'lib/models/comment.php';
+  require_once 'lib/models/collection.php';
+  require_once 'lib/models/collection_item.php';
   require_once 'lib/models/product.php';
   require_once 'lib/models/contest.php';
+  require_once 'lib/models/contest_vote.php';
+  require_once 'lib/models/contest_entry.php';
   require_once 'lib/models/room.php';
   require_once 'lib/models/room_render.php';
   require_once 'lib/models/category.php';

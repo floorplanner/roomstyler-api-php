@@ -9,7 +9,9 @@
   require 'helpers.php';
   require 'api/rs_api.php';
 
-  $api = new RoomstylerApi(['whitelabel' => $CONFIG['RS_USER_WL'], 'password' => $CONFIG['RS_USER_PASS'], 'debug' => true]);
+  $api = new RoomstylerApi(['whitelabel' => $CONFIG['RS_USER_WL'], 'password' => $CONFIG['RS_USER_PASS'], 'debug' => false]);
+
+  pp($api->rooms->index());
 
   # test for domain appending and scoping through http basic auth
   // $rooms = $api->rooms->index(['limit' => 10, 'skip_total' => true, 'skip_last_updated' => true]);
