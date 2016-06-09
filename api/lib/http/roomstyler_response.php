@@ -1,5 +1,6 @@
 <?php
-  class RoomstylerResponse {
+  class RoomstylerResponse extends RoomstylerBase {
+
     private $type;
     private $path;
     private $full_path;
@@ -11,9 +12,7 @@
     private $error;
 
     public function __construct(array $data = []) {
-      foreach ($data as $prop => $val)
-        if (property_exists('RoomstylerResponse', $prop)) $this->$prop = $val;
-
+      foreach ($data as $prop => $val) if (property_exists($this, $prop)) $this->$prop = $val;
       return $this;
     }
 
@@ -41,7 +40,6 @@
       if ($type != 'request' || $type != 'response') $type = 'request';
       return $this->headers[$type];
     }
-
 
   }
 ?>

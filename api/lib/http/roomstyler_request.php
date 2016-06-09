@@ -1,9 +1,9 @@
 <?php
-  require_once 'roomstyler_response.php';
 
-  class RoomstylerRequest {
+  class RoomstylerRequest extends RoomstylerBase {
 
     private static $_settings = [];
+    private static $scope_wl = false;
 
     const DELETE = 'delete';
     const POST = 'post';
@@ -19,6 +19,12 @@
       self::$_settings = $arr;
     }
 
+    public static function scope_wl($b = NULL) {
+      if (is_bool($b)) self::$scope_wl = $b;
+      else self::$scope_wl = false;
+      return self::$scope_wl;
+    }
+
     public static function send($type, $path, array $args = [], $method = self::GET) {
       $mtd = self::fallback_method($method);
       $compiled_args = self::build_arg_array($args, $mtd);
@@ -27,16 +33,7 @@
 
       if ($type == NULL) return $res;
 
-      if (is_array($res['body'])) {
-        if (count($res['body']) == 1)
-          $final_res = new $type(array_shift($res['body']));
-        else {
-          $final_res = [];
-          foreach($res['body'] as $_ => $obj) $final_res[] = new $type($obj);
-        }
-      } else {
-        $final_res = new $type($res['body']);
-      }
+      $final_res = self::collection_from_response($type, $res['body']);
 
       return [
         'result' => $final_res,
@@ -52,32 +49,46 @@
           'error' => $res['error']])];
     }
 
+    private static function collection_from_response($type, &$res, $store = false) {
+      # check if JSON response root node contains a property (either plural or singular) for what we're trying to fetch
+      # if found, reassign $res to this property and continue creating collection
+      $plural_type = parent::to_plural(strtolower(str_replace('Roomstyler', '', $type)));
+      $singular_type = strtolower(str_replace('Roomstyler', '', $type));
+      $out = [];
+
+      if (is_object($res))
+        if (property_exists($res, $plural_type)) $res = $res->$plural_type;
+        else if (property_exists($res, $singular_type)) $res = $res->$singular_type;
+
+      # if result is an array then we want to return an array of wrapped objects
+      if (is_array($res))
+        # if the count is only one, there's probably a root node wrapping the data
+        if (count($res) == 1) $out = new $type(array_shift($res));
+        else foreach($res as $_ => $obj) $out[] = new $type($obj);
+      else $out = new $type($res);
+      return $out;
+    }
+
     private static function build_arg_array($args, $mtd) {
       if (count($args) <= 0) return [];
       if (count(array_keys($args)) !== count(range(0, count($args) - 1)))
         throw new Exception("Please pass an associative array!");
 
-      $compiled_args = [];
+      $out = [];
 
-      if ($mtd[1] !== NULL)
-        $compiled_args[self::$_settings['method_param']] = $mtd[1];
-
-      foreach ($args as $key => $value)
-        $compiled_args[urlencode($key)] = urlencode($value);
-
-      return $compiled_args;
+      if ($mtd[1] !== NULL) $out[self::$_settings['method_param']] = $mtd[1];
+      foreach ($args as $key => $value) $out[urlencode($key)] = urlencode($value);
+      return $out;
     }
 
     private static function fallback_method($method) {
-      if ($method == self::POST || $method == self::GET)
-        return [$method, NULL];
-
+      if ($method == self::POST || $method == self::GET) return [$method, NULL];
       return [self::POST, $method];
     }
 
     private static function build_url($path, $args = NULL) {
       $base_path = self::$_settings['protocol'] . '://';
-      if (self::$_settings['whitelabel']) $base_path .= self::$_settings['whitelabel'] . '.';
+      if (self::$_settings['whitelabel'] && self::$scope_wl) $base_path .= self::$_settings['whitelabel'] . '.';
       if (self::$_settings['host']) $base_path .= self::$_settings['host'] . '/';
       if (self::$_settings['prefix']) $base_path .= self::$_settings['prefix'];
       $url = $base_path . '/' . $path;
@@ -85,7 +96,6 @@
       if ($args) {
         $query = [];
         foreach ($args as $key => $value) $query[] = $key . '=' . $value;
-
         return ($url . '?' . join('&', $query));
       }
 
@@ -108,18 +118,16 @@
         CURLOPT_USERAGENT => self::$_settings['user_agent']]);
 
       # request authentication through http basic
-      list($uname, $upass) = [self::$_settings['whitelabel'],
-                              self::$_settings['password']];
-
-      if (!empty($uname) && !empty($upass)) {
+      if (self::$scope_wl) {
+        list($uname, $upass) = [self::$_settings['whitelabel'], self::$_settings['password']];
         curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
         curl_setopt($curl, CURLOPT_USERPWD, $uname . ':' . $upass);
+        self::scope_wl(false); # reset scope
       }
 
       # request method handling is done prior to this step.
       # if a request needs to be post (e.g. on DELETE, PATCH etc...) it will be
-      if (!empty($params) && $mtd == self::POST)
-        curl_setopt($curl, CURLOPT_POSTFIELDS, $params);
+      if (!empty($params) && $mtd == self::POST) curl_setopt($curl, CURLOPT_POSTFIELDS, $params);
 
       $raw = curl_exec($curl);
       $curl_info = curl_getinfo($curl);
@@ -144,7 +152,7 @@
       $out = [];
       $header_lines = preg_split('/\r\n|\n|\r/', $header_str);
       $header_lines = array_filter($header_lines, function($value) { return strlen($value) > 0; });
-      $out['Meta-Information'] = array_shift($header_lines);
+      $out['HTTP'] = array_shift($header_lines);
 
       foreach ($header_lines as $line) {
         list($key, $val) = explode(': ', $line);
@@ -153,5 +161,6 @@
 
       return $out;
     }
+
   }
 ?>

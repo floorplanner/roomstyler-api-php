@@ -1,6 +1,6 @@
 <?php
 
-  class RoomstylerMethodBase {
+  class RoomstylerMethodBase extends RoomstylerBase {
 
     private $_debug;
     private $_cls;
@@ -15,9 +15,7 @@
         $req = call_user_func_array("$this->_cls::$method", $args);
         if ($this->_debug == true) return $req;
         return $req['result'];
-      } else
-        trigger_error('Call to undefined method '.__CLASS__.'::'.$method.'()',
-                      E_USER_ERROR);
+      } else trigger_error('Call to undefined method '.__CLASS__.'::'.$method.'()', E_USER_ERROR);
     }
 
   }

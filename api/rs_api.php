@@ -1,4 +1,6 @@
 <?php
+  require_once 'lib/roomstyler_base.php';
+  require_once 'lib/http/roomstyler_response.php';
   require_once 'lib/http/roomstyler_request.php';
 
   require_once 'lib/models/model_base.php';
@@ -20,7 +22,7 @@
   require_once 'lib/methods/component.php';
   require_once 'lib/methods/material.php';
 
-  class RoomstylerApi {
+  class RoomstylerApi extends RoomstylerBase {
 
     const VERSION = "1.0";
 
@@ -33,15 +35,14 @@
       'method_param' => '_method',
       'key' => NULL,
       'token' => NULL,
-      'timeout' => 2,
+      'timeout' => 30,
       'connect_timeout' => 30,
       'request_headers' => ['Content-Type: application/json'],
       'debug' => false];
 
     public function __construct($settings) {
       foreach ($this->_settings as $setting => $value)
-        if (array_key_exists($setting, $settings))
-          $this->_settings[$setting] = $settings[$setting];
+        if (array_key_exists($setting, $settings)) $this->_settings[$setting] = $settings[$setting];
 
       $this->_settings['user_agent'] = $this->generate_user_agent();
 
@@ -50,28 +51,27 @@
     }
 
     public function __get($prop) {
-      $class_name = self::method_class_name($prop);
-      return new $class_name($this->_settings['debug']);
+      switch ($prop) {
+        case 'wl':
+          # scope to owned whitelabel (identified by 'whitelabel' and 'password' through basic auth)
+          RoomstylerRequest::scope_wl(true);
+          return $this;
+        break;
+        default:
+          # no scope, no authentication
+          $class_name = self::method_class_name($prop);
+          return new $class_name($this->_settings['debug']);
+      }
     }
 
     protected static function method_class_name($prop) {
-      $prop = self::to_singular($prop);
+      $prop = ucfirst(parent::to_singular($prop));
       return "Roomstyler{$prop}Methods";
     }
 
     protected static function model_class_name($prop) {
-      $prop = self::to_singular($prop);
+      $prop = ucfirst(parent::to_singular($prop));
       return "Roomstyler{$prop}Model";
-    }
-
-    protected static function to_singular($prop) {
-      $prop = preg_replace(['/ies$/', '/s$/'], ['y', ''], $prop);
-      return ucfirst(strtolower($prop));
-    }
-
-    protected static function to_plural($prop) {
-      $prop = preg_replace(['/y$/', '/([^s])$/'], ['ies', '$1s'], $prop);
-      return ucfirst(strtolower($prop));
     }
 
     protected function generate_user_agent() {
@@ -79,5 +79,6 @@
         'RoomstylerApi/' . self::VERSION,
         "({$this->_settings['protocol']}://{$this->_settings['host']})"]);
     }
+
   }
 ?>

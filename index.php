@@ -11,8 +11,9 @@
 
   $api = new RoomstylerApi(['whitelabel' => $CONFIG['RS_USER_WL'], 'password' => $CONFIG['RS_USER_PASS'], 'debug' => true]);
 
-  $rooms = $api->rooms->index(['limit' => 10]);
-
-  pp($rooms);
+  # test for domain appending and scoping through http basic auth
+  // $rooms = $api->rooms->index(['limit' => 10, 'skip_total' => true, 'skip_last_updated' => true]);
+  // $rooms2 = $api->wl->rooms->index(['limit' => 10, 'skip_total' => true, 'skip_last_updated' => true]);
+  // pp($rooms['request_info']->headers('request'), $rooms2['request_info']->headers('request'));
 
 ?>
