@@ -57,9 +57,10 @@
 
       if (!empty($this->_settings['username']) && !empty($this->_settings['username'])) {
         $response = $this->users->login($this->_settings['username'], $this->_settings['password']);
+        if ($this->_settings['debug']) $response = $response['result'];
         if ($response->successful()) {
           $this->_current_user = $response;
-          $this->_settings['token'] = $response->token();
+          $this->_settings['token'] = $response->token;
           RoomstylerRequest::OPTIONS($this->_settings);
         }
       }

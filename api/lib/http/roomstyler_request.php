@@ -110,6 +110,8 @@
 
       curl_setopt_array($curl, [
         CURLINFO_HEADER_OUT => true,
+        CURLOPT_COOKIE => true,
+        CURLOPT_COOKIEFILE => true,
         CURLOPT_HEADER => true,
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_URL => $url,
@@ -123,6 +125,12 @@
         list($uname, $upass) = [self::$_settings['whitelabel'], self::$_settings['password']];
         curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
         curl_setopt($curl, CURLOPT_USERPWD, $uname . ':' . $upass);
+      }
+
+      # request authentication through user login
+      if (self::$_settings['token']) {
+        if (!is_array($params)) $params = [];
+        $params = array_merge(['token' => self::$_settings['token']], $params);
       }
 
       # request method handling is done prior to this step.
