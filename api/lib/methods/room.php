@@ -29,6 +29,10 @@
       return RoomstylerRequest::send('RoomstylerComment', "rooms/$id/comments", $params);
     }
 
+    public static function comment($id, $content) {
+      return RoomstylerRequest::send('RoomstylerComment', "rooms/$id/comments", ['comment' => ['comment' => $content]], RoomstylerRequest::POST);
+    }
+
   }
 
 ?>

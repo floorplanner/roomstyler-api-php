@@ -27,9 +27,9 @@
 
     public static function send($type, $path, array $args = [], $method = self::GET) {
       $mtd = self::fallback_method($method);
-      $compiled_args = $method == self::GET ? self::build_arg_array($args, $mtd) : $args;
-      $url = self::build_url($path, $method == self::GET ? $compiled_args : []);
-      $res = self::curl_fetch($url, $compiled_args, $method);
+      if ($method == self::GET) $args = self::build_arg_array($args, $mtd);
+      $url = self::build_url($path, ($method == self::GET ? $args : []));
+      $res = self::curl_fetch($url, $args, $method);
 
       if ($type == NULL) return $res;
 
@@ -42,7 +42,7 @@
           'type' => $type,
           'path' => $path,
           'full_path' => $url,
-          'arguments' => $compiled_args,
+          'arguments' => $args,
           'method' => $mtd[0],
           'status' => $res['status'],
           'headers' => $res['headers'],
@@ -110,8 +110,8 @@
 
       curl_setopt_array($curl, [
         CURLINFO_HEADER_OUT => true,
-        CURLOPT_HEADER => 1,
-        CURLOPT_RETURNTRANSFER => 1,
+        CURLOPT_HEADER => true,
+        CURLOPT_RETURNTRANSFER => true,
         CURLOPT_URL => $url,
         CURLOPT_HTTPHEADER => self::$_settings['request_headers'],
         CURLOPT_CONNECTTIMEOUT => self::$_settings['connect_timeout'],
@@ -123,19 +123,20 @@
         list($uname, $upass) = [self::$_settings['whitelabel'], self::$_settings['password']];
         curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
         curl_setopt($curl, CURLOPT_USERPWD, $uname . ':' . $upass);
-        self::scope_wl(false); # reset scope
       }
 
       # request method handling is done prior to this step.
       # if a request needs to be post (e.g. on DELETE, PATCH etc...) it will be
       if (!empty($params) && $mtd == self::POST) {
-        curl_setopt($curl, CURLOPT_POST, 1);
+        curl_setopt($curl, CURLOPT_POST, true);
         curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($params));
       }
 
       $raw = curl_exec($curl);
       $curl_info = curl_getinfo($curl);
       $http_status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+      curl_close($curl);
+
       $response_headers = substr($raw, 0, $curl_info['header_size']);
       $body = substr($raw, $curl_info['header_size']);
       $errors = [];
@@ -149,8 +150,6 @@
                 'response' => self::parse_header_str($response_headers)],
               'status' => $http_status,
               'errors' => $errors];
-
-      curl_close($curl);
 
       return $res;
     }

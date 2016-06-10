@@ -31,9 +31,11 @@
 
     const VERSION = "1.0";
 
+    private $_current_user = NULL;
     private $_settings = [
       'protocol' => 'https',
       'whitelabel' => NULL,
+      'username' => NULL,
       'password' => NULL,
       'host' => 'roomstyler.com',
       'prefix' => 'api',
@@ -52,7 +54,25 @@
       $this->_settings['user_agent'] = $this->generate_user_agent();
 
       RoomstylerRequest::OPTIONS($this->_settings);
+
+      if (!empty($this->_settings['username']) && !empty($this->_settings['username'])) {
+        $response = $this->users->login($this->_settings['username'], $this->_settings['password']);
+        if ($response->successful()) {
+          $this->_current_user = $response;
+          $this->_settings['token'] = $response->token();
+          RoomstylerRequest::OPTIONS($this->_settings);
+        }
+      }
+
       return $this;
+    }
+
+    public function logged_in() {
+      return $this->_current_user != NULL;
+    }
+
+    public function current_user() {
+      return $this->_current_user;
     }
 
     public function __get($prop) {
@@ -64,19 +84,9 @@
         break;
         default:
           # no scope, no authentication
-          $class_name = self::method_class_name($prop);
+          $class_name = parent::method_class_name($prop);
           return new $class_name($this->_settings['debug']);
       }
-    }
-
-    protected static function method_class_name($prop) {
-      $prop = ucfirst(parent::to_singular($prop));
-      return "Roomstyler{$prop}Methods";
-    }
-
-    protected static function model_class_name($prop) {
-      $prop = ucfirst(parent::to_singular($prop));
-      return "Roomstyler{$prop}Model";
     }
 
     protected function generate_user_agent() {

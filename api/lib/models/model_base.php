@@ -2,14 +2,13 @@
 
   class RoomstylerModelBase extends RoomstylerBase {
 
-    private $_cls;
     private $_fields_set = false;
     private $_errors = [];
     private $id = NULL;
 
     public function __construct($row, $errors = []) {
+      parent::__construct();
       $this->_errors = $errors;
-      $this->_cls = get_class($this);
       if (is_object($row)) $row = get_object_vars($row);
       if (is_array($row)) {
         foreach ($row as $field => $value) $this->$field = $value;
@@ -17,9 +16,13 @@
       }
     }
 
+    public function __call($method, $arguments) {
+      return $this->call_with_context($method, $arguments, $this);
+    }
+
     public function __get($prop) {
       if (property_exists($this, $prop)) return $this->$prop;
-      else trigger_error('Call to undefined property '.__CLASS__.'::'.$prop.'()', E_USER_ERROR);
+      else trigger_error('Call to undefined property '.__CLASS__.'::'.$prop, E_USER_ERROR);
     }
 
     public function successful() {
