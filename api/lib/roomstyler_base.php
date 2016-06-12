@@ -5,6 +5,7 @@
     protected $_cls;
     protected $_type;
     protected $_debug;
+    protected static $_scope_wl = false;
 
     public function __construct($debug = false) {
       $this->_cls = get_class($this);
@@ -18,6 +19,16 @@
         $method_params = self::method_params($method_class, $method);
         return call_user_func_array("$method_class::$method", $args);
       } else trigger_error('Call to undefined method '.$method_class.'::'.$method.'()', E_USER_ERROR);
+    }
+
+    public static function scope_wl($b = NULL) {
+      if (is_bool($b)) self::$_scope_wl = $b;
+      else self::$_scope_wl = false;
+      return self::$_scope_wl;
+    }
+
+    public static function is_scoped_for_wl() {
+      return self::$_scope_wl;
     }
 
     public function call_with_context($method, $args, $klass) {

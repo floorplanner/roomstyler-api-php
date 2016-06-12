@@ -1,6 +1,6 @@
 <?php
 
-  class RoomstylerEditor {
+  class RoomstylerEditor extends RoomstylerBase {
 
     private static $scope_wl = false;
 
@@ -9,6 +9,7 @@
 
     public function __construct(array $settings, array $html_opts = []) {
       $this->_settings = $settings;
+      $this->html_opts = array_merge($this->html_opts, $html_opts);
     }
 
     public function embed(array $opts = [], array $html_opts = []) {
@@ -34,19 +35,13 @@
       foreach ($src_options as $attr => $val) $src_options[$attr] = "$attr=$val";
 
       $src = $this->_settings['protocol'] . '://';
-      if (self::$scope_wl) {
+      if (parent::is_scoped_for_wl()) {
         $src .= $this->_settings['whitelabel'] . '.';
-        self::scope_wl(false);
+        parent::scope_wl(false);
       }
       $src = $src .= $this->_settings['host'] . '/embed' . '?' . join('&', $src_options);
 
       return "<iframe src=\"$src\" {$attrs}></iframe>";
-    }
-
-    public static function scope_wl($b = NULL) {
-      if (is_bool($b)) self::$scope_wl = $b;
-      else self::$scope_wl = false;
-      return self::$scope_wl;
     }
 
   }

@@ -19,12 +19,10 @@
     }
 
     public function __call($method, $arguments) {
+      if (property_exists($this, $method)) return $this->$method;
+      # if a function is called whose property isn't defined, look in the
+      # respective Roomstyler{obj}Methods object for another API call to execute.
       return $this->call_with_context($method, $arguments, $this);
-    }
-
-    public function __get($prop) {
-      if (property_exists($this, $prop)) return $this->$prop;
-      else trigger_error('Call to undefined property '.__CLASS__.'::'.$prop, E_USER_ERROR);
     }
 
     public function successful() {

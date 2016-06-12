@@ -1,5 +1,6 @@
 <?php
   require_once 'lib/roomstyler_base.php';
+
   require_once 'lib/http/roomstyler_response.php';
   require_once 'lib/http/roomstyler_request.php';
 
@@ -37,7 +38,6 @@
     const VERSION = "1.0";
 
     private $_current_user = NULL;
-    private $_editor = NULL;
     private $_settings = [
       'protocol' => 'https',
       'whitelabel' => NULL,
@@ -70,11 +70,9 @@
             $this->_current_user = $response;
             $this->_settings['token'] = $response->token;
             RoomstylerRequest::OPTIONS($this->_settings);
-          } else throw new Exception("Incorrect login credentials!");
+          }
         }
       }
-
-      return $this;
     }
 
     public function logged_in() {
@@ -85,17 +83,21 @@
       return $this->_current_user;
     }
 
+    # objects are returned based on properties being called.
+    # these properties do not exist but if they have a Roomstyler{type} and
+    # optionally a Roomstyler{type}Methods object they will be called here.
+
+    # the 'wl' property is used to toggle api scoping
+    # the 'editor' property is used to access an editor class to allow for embedding
+    # with given settings.
     public function __get($prop) {
       switch ($prop) {
         case 'wl':
-          # scope to owned whitelabel (identified by 'whitelabel' and 'password' through basic auth)
-          RoomstylerRequest::scope_wl(true);
-          RoomstylerEditor::scope_wl(true);
+          parent::scope_wl(true);
           return $this;
         break;
         case 'editor':
-          if (!$this->_editor) $this->_editor = new RoomstylerEditor($this->_settings);
-          return $this->_editor;
+          return new RoomstylerEditor($this->_settings);
         break;
         default:
           # no scope, no authentication

@@ -15,11 +15,13 @@
   $url = $api->rooms->find(14013530)['result']->url;
 
   # use this token in editor
-  $token = $api->users->login($CONFIG['RS_USER_USERNAME'], $CONFIG['RS_USER_PASSWORD'])['result']->token;
-
+  $token = $api->users->login($CONFIG['RS_USER_USERNAME'], $CONFIG['RS_USER_PASSWORD'])['result']->token();
   # can't seem to use 'room_url' while using whitelabel editor ($api->wl->editor...)
 
+  pp($api->wl->rooms->index());
+  pp($api->rooms->index());
+
   # embed returns a HTML string which needs to be echoe'd out
-  echo $api->editor->embed(['token' => $token, 'room_url' => urlencode($url)]);
+  // echo $api->editor->embed(['token' => $token, 'room_url' => urlencode($url)]);
 
 ?>

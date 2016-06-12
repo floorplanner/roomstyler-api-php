@@ -3,7 +3,6 @@
   class RoomstylerRequest extends RoomstylerBase {
 
     private static $_settings = [];
-    private static $scope_wl = false;
 
     const DELETE = 'delete';
     const POST = 'post';
@@ -11,18 +10,8 @@
     const PUT = 'put';
     const PATCH = 'patch';
 
-    public function __construct(array $arr = []) {
-      if (!empty($arr)) self::OPTIONS($arr);
-    }
-
     public static function OPTIONS(array $arr) {
       self::$_settings = $arr;
-    }
-
-    public static function scope_wl($b = NULL) {
-      if (is_bool($b)) self::$scope_wl = $b;
-      else self::$scope_wl = false;
-      return self::$scope_wl;
     }
 
     public static function send($type, $path, array $args = [], $method = self::GET) {
@@ -97,7 +86,7 @@
 
     private static function build_url($path, $args = NULL) {
       $base_path = self::$_settings['protocol'] . '://';
-      if (self::$_settings['whitelabel'] && self::$scope_wl) $base_path .= self::$_settings['whitelabel'] . '.';
+      if (self::$_settings['whitelabel'] && parent::is_scoped_for_wl()) $base_path .= self::$_settings['whitelabel'] . '.';
       if (self::$_settings['host']) $base_path .= self::$_settings['host'] . '/';
       if (self::$_settings['prefix']) $base_path .= self::$_settings['prefix'];
       $url = $base_path . '/' . $path;
@@ -127,10 +116,11 @@
         CURLOPT_USERAGENT => self::$_settings['user_agent']]);
 
       # request authentication through http basic
-      if (self::$scope_wl) {
+      if (parent::is_scoped_for_wl()) {
         list($uname, $upass) = [self::$_settings['whitelabel'], self::$_settings['password']];
         curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
         curl_setopt($curl, CURLOPT_USERPWD, $uname . ':' . $upass);
+        parent::scope_wl(false);
       }
 
       # request authentication through user login
