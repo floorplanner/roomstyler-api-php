@@ -3,6 +3,8 @@
   require_once 'lib/http/roomstyler_response.php';
   require_once 'lib/http/roomstyler_request.php';
 
+  require_once 'lib/editor/editor.php';
+
   require_once 'lib/models/model_base.php';
   require_once 'lib/models/user.php';
   require_once 'lib/models/comment.php';
@@ -35,6 +37,7 @@
     const VERSION = "1.0";
 
     private $_current_user = NULL;
+    private $_editor = NULL;
     private $_settings = [
       'protocol' => 'https',
       'whitelabel' => NULL,
@@ -46,6 +49,7 @@
       'key' => NULL,
       'token' => NULL,
       'timeout' => 5,
+      'language' => 'en',
       'connect_timeout' => 30,
       'request_headers' => ['Content-Type: application/json'],
       'debug' => false];
@@ -86,7 +90,12 @@
         case 'wl':
           # scope to owned whitelabel (identified by 'whitelabel' and 'password' through basic auth)
           RoomstylerRequest::scope_wl(true);
+          RoomstylerEditor::scope_wl(true);
           return $this;
+        break;
+        case 'editor':
+          if (!$this->_editor) $this->_editor = new RoomstylerEditor($this->_settings);
+          return $this->_editor;
         break;
         default:
           # no scope, no authentication

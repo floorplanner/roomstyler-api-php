@@ -10,6 +10,10 @@
       return RoomstylerRequest::send('RoomstylerUser', "users/login", ['email' => $username, 'password' => $password], RoomstylerRequest::POST);
     }
 
+    protected static function delete($id, $params = []) {
+      return RoomstylerRequest::send('RoomstylerUser', "users/$id", [], RoomstylerRequest::DELETE);
+    }
+
     protected static function find($ids, $params = []) {
       if (is_array($ids)) $ids = implode($ids, ',');
       return RoomstylerRequest::send('RoomstylerUser', "users/$ids", $params);

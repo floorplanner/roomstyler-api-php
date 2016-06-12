@@ -38,6 +38,16 @@
       return RoomstylerRequest::send('RoomstylerComment', "rooms/$id/comments", $params);
     }
 
+    public static function add_tags($id, $tags = []) {
+      $tags = join(',', $tags);
+      return RoomstylerRequest::send('RoomstylerRoom', "rooms/$id/tags", ['tags' => $tags], RoomstylerRequest::POST);
+    }
+
+    public static function remove_tags($id, $tags = []) {
+      $tags = join(',', $tags);
+      return RoomstylerRequest::send('RoomstylerRoom', "rooms/$id/tags", ['tags' => $tags], RoomstylerRequest::DELETE);
+    }
+
     public static function comment($id, $content) {
       return RoomstylerRequest::send('RoomstylerComment', "rooms/$id/comments", ['comment' => ['comment' => $content]], RoomstylerRequest::POST);
     }

@@ -9,26 +9,17 @@
   require 'helpers.php';
   require 'api/rs_api.php';
 
-  $api = new RoomstylerApi(['username' => $CONFIG['RS_USER_USERNAME'], 'password' => $CONFIG['RS_USER_PASSWORD'], 'debug' => true]);
+  $api = new RoomstylerApi(['whitelabel' => $CONFIG['RS_WHITELABEL'], 'password' => $CONFIG['RS_WHITELABEL_PASSWORD'], 'debug' => true]);
 
-  $time = time();
-  // $response = $api->wl->users->create(['username' => "rs_test_$time", 'email' => "rs_test_$time@testing.com", 'password' => 'my awesome password']);
-  // $response = $api->wl->rooms->find(14013530)['result']->comment("$time :: This is an comment created through the API");
-  // $response = $api->rooms->comment(14013530, "$time :: This is an comment created through the API");
-  pp($api->rooms->search_meta()['result']);
-  // $meta = $api->rooms->search_meta();
-  // pp($rooms);
-  // pp($room->comment("testing"));
-  // pp($room->comments());
-  // pp($response);
+  # use custom url in editor
+  $url = $api->rooms->find(14013530)['result']->url;
 
-  // if ($response->successful()) pp('Your account has been created! Check your email to activate');
-  // else pp($response->errors());
+  # use this token in editor
+  $token = $api->users->login($CONFIG['RS_USER_USERNAME'], $CONFIG['RS_USER_PASSWORD'])['result']->token;
 
-  # test for domain appending and scoping through http basic auth
-  // $rooms = $api->rooms->index(['limit' => 10]);
-  // $rooms2 = $api->wl->rooms->index(['limit' => 10]);
-  // pp($rooms['request_info']->headers('request'), $rooms2['request_info']->headers('request'));
-  // pp($rooms, $rooms2);
+  # can't seem to use 'room_url' while using whitelabel editor ($api->wl->editor...)
+
+  # embed returns a HTML string which needs to be echoe'd out
+  echo $api->editor->embed(['token' => $token, 'room_url' => urlencode($url)]);
 
 ?>
