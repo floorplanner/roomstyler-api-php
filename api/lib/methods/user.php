@@ -28,13 +28,11 @@
     }
 
     protected static function collection($id, $collection_id, $params = []) {
-      return RoomstylerRequest::send('RoomstylerCollection',
-                                     "users/$id/collections/$collection_id", $params);
+      return RoomstylerRequest::send('RoomstylerCollection', "users/$id/collections/$collection_id", $params);
     }
 
     protected static function collection_items($id, $collection_id, $params = []) {
-      return RoomstylerRequest::send('RoomstylerCollectionItem',
-                                     "users/$id/collections/$collection_id/items", $params);
+      return RoomstylerRequest::send('RoomstylerCollectionItem', "users/$id/collections/$collection_id/items", $params);
     }
 
   }

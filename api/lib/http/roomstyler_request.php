@@ -55,29 +55,34 @@
     private static function collection_from_response($type, $res, $store = false) {
       # check if JSON response root node contains a property (either plural or singular) for what we're trying to fetch
       # if found, reassign $res to this property and continue creating collection
-      $plural_type = parent::to_plural(strtolower(str_replace('Roomstyler', '', $type)));
       $singular_type = strtolower(str_replace('Roomstyler', '', $type));
+      $plural_type = parent::to_plural($singular_type);
       $out = [];
+      $errors = [];
+      $status = $res['status'];
+      if (isset($res['errors']) && !is_array($res['errors'])) $errors = $res['errors'];
       $errors = $res['errors'];
+      if (isset($res['error'])) array_merge($errors, ['missing_parameter' => $res['error']]);
       $res = $res['body'];
 
       if (is_object($res))
         if (property_exists($res, $plural_type)) $res = $res->$plural_type;
         else if (property_exists($res, $singular_type)) $res = $res->$singular_type;
 
+      #SearchMeta request is different since it fetches multiple nested resources
+      if ($singular_type == 'searchmeta') return new RoomstylerSearchMeta($res, $errors, $status);
+
       # if result is an array then we want to return an array of wrapped objects
       if (is_array($res))
         # if the count is only one, there's probably a root node wrapping the data
-        if (count($res) == 1) $out = new $type(array_shift($res), $errors);
-        else foreach($res as $_ => $obj) $out[] = new $type($obj, $errors);
-      else $out = new $type($res, $errors);
+        if (count($res) == 1) $out = new $type(array_shift($res), $errors, $status);
+        else foreach($res as $_ => $obj) $out[] = new $type($obj, $errors, $status);
+      else $out = new $type($res, $errors, $status);
       return $out;
     }
 
     private static function build_arg_array($args, $mtd) {
       if (count($args) <= 0) return [];
-      if (count(array_keys($args)) !== count(range(0, count($args) - 1)))
-        throw new Exception("Please pass an associative array!");
 
       $out = [];
 

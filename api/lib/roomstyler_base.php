@@ -4,10 +4,12 @@
 
     protected $_cls;
     protected $_type;
+    protected $_debug;
 
-    public function __construct() {
+    public function __construct($debug = false) {
       $this->_cls = get_class($this);
       $this->_type = strtolower(preg_replace('/Roomstyler|Methods|Model/', '', $this->_cls));
+      $this->_debug = $debug;
     }
 
     public function __call($method, $args) {
@@ -40,7 +42,7 @@
 
     protected static function model_class_name($prop) {
       $prop = ucfirst(self::to_singular($prop));
-      return "Roomstyler{$prop}Model";
+      return "Roomstyler{$prop}";
     }
 
     protected static function method_class_name($prop) {

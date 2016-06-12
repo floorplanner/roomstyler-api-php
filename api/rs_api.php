@@ -14,7 +14,10 @@
   require_once 'lib/models/contest_entry.php';
   require_once 'lib/models/room.php';
   require_once 'lib/models/room_render.php';
+  require_once 'lib/models/search_meta.php';
   require_once 'lib/models/category.php';
+  require_once 'lib/models/style.php';
+  require_once 'lib/models/timeframe.php';
   require_once 'lib/models/component.php';
   require_once 'lib/models/material.php';
 
@@ -42,7 +45,7 @@
       'method_param' => 'method',
       'key' => NULL,
       'token' => NULL,
-      'timeout' => 30,
+      'timeout' => 5,
       'connect_timeout' => 30,
       'request_headers' => ['Content-Type: application/json'],
       'debug' => false];

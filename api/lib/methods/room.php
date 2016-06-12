@@ -17,6 +17,10 @@
       return RoomstylerRequest::send('RoomstylerRoom', "rooms/search", $params);
     }
 
+    protected static function search_meta() {
+      return RoomstylerRequest::send('RoomstylerSearchMeta', "rooms/search/meta");
+    }
+
     protected static function products($id, $params = []) {
       $params = array_merge(['skip_model' => true], $params);
       return RoomstylerRequest::send('RoomstylerRoom', "rooms/$id/products", $params);
