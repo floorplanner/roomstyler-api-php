@@ -12,6 +12,11 @@
       return RoomstylerRequest::send('RoomstylerRoom', "rooms/$id", $params);
     }
 
+    protected static function search($params = []) {
+      $params = array_merge(['limit' => 50], $params);
+      return RoomstylerRequest::send('RoomstylerRoom', "rooms/search", $params);
+    }
+
     protected static function products($id, $params = []) {
       $params = array_merge(['skip_model' => true], $params);
       return RoomstylerRequest::send('RoomstylerRoom', "rooms/$id/products", $params);
