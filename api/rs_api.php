@@ -59,9 +59,11 @@
         $response = $this->users->login($this->_settings['username'], $this->_settings['password']);
         if ($this->_settings['debug']) $response = $response['result'];
         if ($response->successful()) {
-          $this->_current_user = $response;
-          $this->_settings['token'] = $response->token;
-          RoomstylerRequest::OPTIONS($this->_settings);
+          if (property_exists($response, 'token')) {
+            $this->_current_user = $response;
+            $this->_settings['token'] = $response->token;
+            RoomstylerRequest::OPTIONS($this->_settings);
+          } else throw new Exception("Incorrect login credentials!");
         }
       }
 

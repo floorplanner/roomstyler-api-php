@@ -14,7 +14,7 @@
 
     protected static function products($id, $params = []) {
       $params = array_merge(['skip_model' => true], $params);
-      return RoomstylerRequest::send('RoomstylerRoom', "rooms/$id", $params);
+      return RoomstylerRequest::send('RoomstylerRoom', "rooms/$id/products", $params);
     }
 
     protected static function related_rooms($id, $params = []) {
@@ -31,6 +31,10 @@
 
     public static function comment($id, $content) {
       return RoomstylerRequest::send('RoomstylerComment', "rooms/$id/comments", ['comment' => ['comment' => $content]], RoomstylerRequest::POST);
+    }
+
+    public static function toggle_love($id, $params = []) {
+      return RoomstylerRequest::send('RoomstylerRoom', "rooms/$id/toggle_like", $params, RoomstylerRequest::POST);
     }
 
   }

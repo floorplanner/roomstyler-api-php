@@ -17,8 +17,8 @@
   // $response = $api->wl->users->create(['username' => "rs_test_$time", 'email' => "rs_test_$time@testing.com", 'password' => 'my awesome password']);
   // $response = $api->wl->rooms->find(14013530)['result']->comment("$time :: This is an comment created through the API");
   // $response = $api->rooms->comment(14013530, "$time :: This is an comment created through the API");
-  $room = $api->rooms->find(14013530)['result'];
-  pp($room->comments());
+  $contest = $api->contests->find(1316)['result'];
+  pp($contest->votes());
   // pp($room->comment("testing"));
   // pp($room->comments());
   // pp($response);
