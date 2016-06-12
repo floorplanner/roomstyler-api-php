@@ -39,7 +39,7 @@
       'password' => NULL,
       'host' => 'roomstyler.com',
       'prefix' => 'api',
-      'method_param' => '_method',
+      'method_param' => 'method',
       'key' => NULL,
       'token' => NULL,
       'timeout' => 30,

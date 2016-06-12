@@ -28,8 +28,9 @@
     public static function send($type, $path, array $args = [], $method = self::GET) {
       $mtd = self::fallback_method($method);
       if ($method == self::GET) $args = self::build_arg_array($args, $mtd);
+      if ($mtd[1] !== NULL) $args[self::$_settings['method_param']] = $mtd[1];
       $url = self::build_url($path, ($method == self::GET ? $args : []));
-      $res = self::curl_fetch($url, $args, $method);
+      $res = self::curl_fetch($url, $args, $mtd[0]);
 
       if ($type == NULL) return $res;
 
@@ -44,6 +45,7 @@
           'full_path' => $url,
           'arguments' => $args,
           'method' => $mtd[0],
+          'original_method' => $mtd[1],
           'status' => $res['status'],
           'headers' => $res['headers'],
           'body' => $res['body'],
@@ -79,7 +81,6 @@
 
       $out = [];
 
-      if ($mtd[1] !== NULL) $out[self::$_settings['method_param']] = $mtd[1];
       foreach ($args as $key => $value) $out[urlencode($key)] = urlencode($value);
       return $out;
     }

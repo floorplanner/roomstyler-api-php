@@ -9,7 +9,7 @@
   require 'helpers.php';
   require 'api/rs_api.php';
 
-  $api = new RoomstylerApi(['username' => $CONFIG['RS_USER_USERNAME'], 'password' => $CONFIG['RS_USER_PASSWORD'], 'debug' => true]);
+  $api = new RoomstylerApi(['whitelabel' => $CONFIG['RS_WHITELABEL'], 'password' => $CONFIG['RS_WHITELABEL_PASSWORD'], 'debug' => true]);
 
   // pp($api->current_user());
 
@@ -17,8 +17,8 @@
   // $response = $api->wl->users->create(['username' => "rs_test_$time", 'email' => "rs_test_$time@testing.com", 'password' => 'my awesome password']);
   // $response = $api->wl->rooms->find(14013530)['result']->comment("$time :: This is an comment created through the API");
   // $response = $api->rooms->comment(14013530, "$time :: This is an comment created through the API");
-  $contest = $api->contests->find(1316)['result'];
-  pp($contest->votes());
+  $room = $api->wl->rooms->find(14012955)['result'];
+  pp($room);
   // pp($room->comment("testing"));
   // pp($room->comments());
   // pp($response);

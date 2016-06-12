@@ -37,6 +37,13 @@
       return RoomstylerRequest::send('RoomstylerRoom', "rooms/$id/toggle_like", $params, RoomstylerRequest::POST);
     }
 
+    public static function render($id, $params = [], $mode = '') {
+      $params = array_merge(['width' => 1920, 'height' => 1080], $params);
+      if ($mode == '2d') $mode = "_$mode";
+      else $mode = '';
+      return RoomstylerRequest::send('RoomstylerRoom', "rooms/$id/render$mode", $params, RoomstylerRequest::POST);
+    }
+
   }
 
 ?>
