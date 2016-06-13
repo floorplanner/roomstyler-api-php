@@ -2,41 +2,41 @@
 
   class RoomstylerUserMethods extends RoomstylerMethodBase {
 
-    protected static function create($params) {
-      return RoomstylerRequest::send('RoomstylerUser', "users", ['user' => $params], RoomstylerRequest::POST);
+    public function create($params) {
+      return RoomstylerRequest::send($this, 'RoomstylerUser', "users", ['user' => $params], RoomstylerRequest::POST);
     }
 
-    protected static function login($username, $password) {
-      return RoomstylerRequest::send('RoomstylerUser', "users/login", ['email' => $username, 'password' => $password], RoomstylerRequest::POST);
+    public function login($username, $password) {
+      return RoomstylerRequest::send($this, 'RoomstylerUser', "users/login", ['email' => $username, 'password' => $password], RoomstylerRequest::POST);
     }
 
-    protected static function delete($id, $params = []) {
-      return RoomstylerRequest::send('RoomstylerUser', "users/$id", [], RoomstylerRequest::DELETE);
+    public function delete($id, $params = []) {
+      return RoomstylerRequest::send($this, 'RoomstylerUser', "users/$id", [], RoomstylerRequest::DELETE);
     }
 
-    protected static function find($ids, $params = []) {
+    public function find($ids, $params = []) {
       if (is_array($ids)) $ids = implode($ids, ',');
-      return RoomstylerRequest::send('RoomstylerUser', "users/$ids", $params);
+      return RoomstylerRequest::send($this, 'RoomstylerUser', "users/$ids", $params);
     }
 
-    protected static function token($id, $params = []) {
-      return RoomstylerRequest::send('RoomstylerUser', "users/$id/token", $params);
+    public function token($id, $params = []) {
+      return RoomstylerRequest::send($this, 'RoomstylerUser', "users/$id/token", $params);
     }
 
-    protected static function loved_rooms($id, $params = []) {
-      return RoomstylerRequest::send('RoomstylerRoom', "users/$id/rooms_loved", $params);
+    public function loved_rooms($id, $params = []) {
+      return RoomstylerRequest::send($this, 'RoomstylerRoom', "users/$id/rooms_loved", $params);
     }
 
-    protected static function collections($id, $params = []) {
-      return RoomstylerRequest::send('RoomstylerCollection', "users/$id/collections", $params);
+    public function collections($id, $params = []) {
+      return RoomstylerRequest::send($this, 'RoomstylerCollection', "users/$id/collections", $params);
     }
 
-    protected static function collection($id, $collection_id, $params = []) {
-      return RoomstylerRequest::send('RoomstylerCollection', "users/$id/collections/$collection_id", $params);
+    public function collection($id, $collection_id, $params = []) {
+      return RoomstylerRequest::send($this, 'RoomstylerCollection', "users/$id/collections/$collection_id", $params);
     }
 
-    protected static function collection_items($id, $collection_id, $params = []) {
-      return RoomstylerRequest::send('RoomstylerCollectionItem', "users/$id/collections/$collection_id/items", $params);
+    public function collection_items($id, $collection_id, $params = []) {
+      return RoomstylerRequest::send($this, 'RoomstylerCollectionItem', "users/$id/collections/$collection_id/items", $params);
     }
 
   }

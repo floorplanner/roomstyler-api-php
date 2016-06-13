@@ -2,62 +2,62 @@
 
   class RoomstylerRoomMethods extends RoomstylerMethodBase {
 
-    protected static function index($params = []) {
+    public function index($params = []) {
       $params = array_merge(['limit' => 50, 'skip_total' => true, 'skip_last_updated' => true], $params);
-      return RoomstylerRequest::send('RoomstylerRoom', "rooms", $params);
+      return RoomstylerRequest::send($this, 'RoomstylerRoom', "rooms", $params);
     }
 
-    protected static function find($id, $params = []) {
+    public function find($id, $params = []) {
       $params = array_merge(['skip_model' => true], $params);
-      return RoomstylerRequest::send('RoomstylerRoom', "rooms/$id", $params);
+      return RoomstylerRequest::send($this, 'RoomstylerRoom', "rooms/$id", $params);
     }
 
-    protected static function search($params = []) {
+    public function search($params = []) {
       $params = array_merge(['limit' => 50], $params);
-      return RoomstylerRequest::send('RoomstylerRoom', "rooms/search", $params);
+      return RoomstylerRequest::send($this, 'RoomstylerRoom', "rooms/search", $params);
     }
 
-    protected static function search_meta() {
-      return RoomstylerRequest::send('RoomstylerSearchMeta', "rooms/search/meta");
+    public function search_meta() {
+      return RoomstylerRequest::send($this, 'RoomstylerSearchMeta', "rooms/search/meta");
     }
 
-    protected static function products($id, $params = []) {
+    public function products($id, $params = []) {
       $params = array_merge(['skip_model' => true], $params);
-      return RoomstylerRequest::send('RoomstylerRoom', "rooms/$id/products", $params);
+      return RoomstylerRequest::send($this, 'RoomstylerRoom', "rooms/$id/products", $params);
     }
 
-    protected static function related_rooms($id, $params = []) {
-      return RoomstylerRequest::send('RoomstylerRoom', "rooms/$id/related", $params);
+    public function related_rooms($id, $params = []) {
+      return RoomstylerRequest::send($this, 'RoomstylerRoom', "rooms/$id/related", $params);
     }
 
-    protected static function loved_by($id, $params = []) {
-      return RoomstylerRequest::send('RoomstylerUser', "rooms/$id/loved_by", $params);
+    public function loved_by($id, $params = []) {
+      return RoomstylerRequest::send($this, 'RoomstylerUser', "rooms/$id/loved_by", $params);
     }
 
-    protected static function comments($id, $params = []) {
-      return RoomstylerRequest::send('RoomstylerComment', "rooms/$id/comments", $params);
+    public function comments($id, $params = []) {
+      return RoomstylerRequest::send($this, 'RoomstylerComment', "rooms/$id/comments", $params);
     }
 
-    public static function delete($id) {
-      return RoomstylerRequest::send('RoomstylerRoom', "rooms/$id", [], RoomstylerRequest::DELETE);
+    public function delete($id) {
+      return RoomstylerRequest::send($this, 'RoomstylerRoom', "rooms/$id", [], RoomstylerRequest::DELETE);
     }
 
-    public static function add_tags($id, $tags = []) {
+    public function add_tags($id, $tags = []) {
       $tags = join(',', $tags);
-      return RoomstylerRequest::send('RoomstylerRoom', "rooms/$id/tags", ['tags' => $tags], RoomstylerRequest::POST);
+      return RoomstylerRequest::send($this, 'RoomstylerRoom', "rooms/$id/tags", ['tags' => $tags], RoomstylerRequest::POST);
     }
 
-    public static function remove_tags($id, $tags = []) {
+    public function remove_tags($id, $tags = []) {
       $tags = join(',', $tags);
-      return RoomstylerRequest::send('RoomstylerRoom', "rooms/$id/tags", ['tags' => $tags], RoomstylerRequest::DELETE);
+      return RoomstylerRequest::send($this, 'RoomstylerRoom', "rooms/$id/tags", ['tags' => $tags], RoomstylerRequest::DELETE);
     }
 
-    public static function comment($id, $content) {
-      return RoomstylerRequest::send('RoomstylerComment', "rooms/$id/comments", ['comment' => ['comment' => $content]], RoomstylerRequest::POST);
+    public function comment($id, $content) {
+      return RoomstylerRequest::send($this, 'RoomstylerComment', "rooms/$id/comments", ['comment' => ['comment' => $content]], RoomstylerRequest::POST);
     }
 
-    public static function toggle_love($id, $params = []) {
-      return RoomstylerRequest::send('RoomstylerRoom', "rooms/$id/toggle_like", $params, RoomstylerRequest::POST);
+    public function toggle_love($id, $params = []) {
+      return RoomstylerRequest::send($this, 'RoomstylerRoom', "rooms/$id/toggle_like", $params, RoomstylerRequest::POST);
     }
 
     public static function render($id, $params = [], $mode = '') {

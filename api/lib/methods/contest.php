@@ -2,20 +2,20 @@
 
   class RoomstylerContestMethods extends RoomstylerMethodBase {
 
-    protected static function index($params = []) {
-      return RoomstylerRequest::send('RoomstylerContest', "contests", $params);
+    public function index($params = []) {
+      return RoomstylerRequest::send($this, 'RoomstylerContest', "contests", $params);
     }
 
-    protected static function find($id, $params = []) {
-      return RoomstylerRequest::send('RoomstylerContest', "contests/$id", $params);
+    public function find($id, $params = []) {
+      return RoomstylerRequest::send($this, 'RoomstylerContest', "contests/$id", $params);
     }
 
-    protected static function votes($id, $params = []) {
-      return RoomstylerRequest::send('RoomstylerContestVote', "contests/$id/votes", $params);
+    public function votes($id, $params = []) {
+      return RoomstylerRequest::send($this, 'RoomstylerContestVote', "contests/$id/votes", $params);
     }
 
-    protected static function entries($id, $params = []) {
-      return RoomstylerRequest::send('RoomstylerContestEntry', "contests/$id/contest_entries", $params);
+    public function entries($id, $params = []) {
+      return RoomstylerRequest::send($this, 'RoomstylerContestEntry', "contests/$id/contest_entries", $params);
     }
 
   }

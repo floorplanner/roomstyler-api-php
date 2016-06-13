@@ -2,8 +2,8 @@
 
   class RoomstylerCategoryMethods extends RoomstylerMethodBase {
 
-    protected static function index($params = []) {
-      return RoomstylerRequest::send('RoomstylerCategory', 'categories', $params);
+    public function index($params = []) {
+      return RoomstylerRequest::send($this, 'RoomstylerCategory', 'categories', $params);
     }
 
   }

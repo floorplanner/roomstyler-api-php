@@ -2,8 +2,8 @@
 
   class RoomstylerMaterialMethods extends RoomstylerMethodBase {
 
-    protected static function find($id, $params = []) {
-      return RoomstylerRequest::send('RoomstylerMaterial', "materials/$id", $params);
+    public function find($id, $params = []) {
+      return RoomstylerRequest::send($this, 'RoomstylerMaterial', "materials/$id", $params);
     }
 
   }
