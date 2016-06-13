@@ -21,6 +21,16 @@
       } else trigger_error('Call to undefined method '.$method_class.'::'.$method.'()', E_USER_ERROR);
     }
 
+    # using this function so that I can use model methods to fetch data automatically
+    public function call_with_context($method, $args, $klass) {
+      $method_class = self::method_class_name($this->type());
+      if (method_exists($method_class, $method)) {
+        $method_params = self::method_params($method_class, $method);
+        if ($method_params[0] == 'id') array_unshift($args, $klass->id());
+        return call_user_func_array("$method_class::$method", $args);
+      } else trigger_error('Call to undefined method '.$method_class.'::'.$method.'()', E_USER_ERROR);
+    }
+
     public static function scope_wl($b = NULL) {
       if (is_bool($b)) self::$_scope_wl = $b;
       else self::$_scope_wl = false;
@@ -29,15 +39,6 @@
 
     public static function is_scoped_for_wl() {
       return self::$_scope_wl;
-    }
-
-    public function call_with_context($method, $args, $klass) {
-      $method_class = self::method_class_name($this->type());
-      if (method_exists($method_class, $method)) {
-        $method_params = self::method_params($method_class, $method);
-        if ($method_params[0] == 'id') array_unshift($args, $klass->id);
-        return call_user_func_array("$method_class::$method", $args);
-      } else trigger_error('Call to undefined method '.$method_class.'::'.$method.'()', E_USER_ERROR);
     }
 
     protected function type() {

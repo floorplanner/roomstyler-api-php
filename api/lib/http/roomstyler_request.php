@@ -4,22 +4,28 @@
 
     private static $_settings = [];
 
-    const DELETE = 'delete';
-    const POST = 'post';
-    const GET = 'get';
-    const PUT = 'put';
-    const PATCH = 'patch';
+    const DELETE = 'DELETE';
+    const POST = 'POST';
+    const GET = 'GET';
+    const PUT = 'PUT';
+    const PATCH = 'PATCH';
 
     public static function OPTIONS(array $arr) {
-      self::$_settings = $arr;
+      self::$_settings = array_merge(self::$_settings, $arr);
     }
 
     public static function send($type, $path, array $args = [], $method = self::GET) {
-      $mtd = self::fallback_method($method);
-      if ($method == self::GET) $args = self::build_arg_array($args, $mtd);
-      if ($mtd[1] !== NULL) $args[self::$_settings['method_param']] = $mtd[1];
+      if ($method == self::GET) {
+        foreach ($args as $key => $value) {
+          unset($args[$key]);
+          $args[urlencode($key)] = urlencode($value);
+        }
+      } else if (self::$_settings['token'])
+        $args = array_merge($args, ['token' => self::$_settings['token']]);
+
+      # if the request isn't GET then we don't want to add any query params
       $url = self::build_url($path, ($method == self::GET ? $args : []));
-      $res = self::curl_fetch($url, $args, $mtd[0]);
+      $res = self::curl_fetch($url, $args, $method);
 
       if ($type == NULL) return $res;
 
@@ -29,12 +35,10 @@
       return [
         'result' => $final_res,
         'request_info' => new RoomstylerResponse([
-          'type' => $type,
           'path' => $path,
           'full_path' => $url,
           'arguments' => $args,
-          'method' => $mtd[0],
-          'original_method' => $mtd[1],
+          'method' => $method,
           'status' => $res['status'],
           'headers' => $res['headers'],
           'body' => $res['body'],
@@ -48,17 +52,21 @@
       $plural_type = parent::to_plural($singular_type);
       $out = [];
       $errors = [];
+
+      # some pages have an 'errors' hash, others have a single 'error' hash
+      # this is an attempt to gather errors in a consistent way
       $status = $res['status'];
       if (isset($res['errors']) && !is_array($res['errors'])) $errors = $res['errors'];
       $errors = $res['errors'];
-      if (isset($res['error'])) array_merge($errors, ['missing_parameter' => $res['error']]);
+      if (isset($res['error'])) array_merge($errors, ['single_error' => $res['error']]);
       $res = $res['body'];
 
       if (is_object($res))
         if (property_exists($res, $plural_type)) $res = $res->$plural_type;
         else if (property_exists($res, $singular_type)) $res = $res->$singular_type;
 
-      #SearchMeta request is different since it fetches multiple nested resources
+      # SearchMeta request is different since it fetches multiple nested resources
+      # therefore we wrap the nested resources within the class instead of here
       if ($singular_type == 'searchmeta') return new RoomstylerSearchMeta($res, $errors, $status);
 
       # if result is an array then we want to return an array of wrapped objects
@@ -70,23 +78,9 @@
       return $out;
     }
 
-    private static function build_arg_array($args, $mtd) {
-      if (count($args) <= 0) return [];
-
-      $out = [];
-
-      foreach ($args as $key => $value) $out[urlencode($key)] = urlencode($value);
-      return $out;
-    }
-
-    private static function fallback_method($method) {
-      if ($method == self::POST || $method == self::GET) return [$method, NULL];
-      return [self::POST, $method];
-    }
-
     private static function build_url($path, $args = NULL) {
       $base_path = self::$_settings['protocol'] . '://';
-      if (self::$_settings['whitelabel'] && parent::is_scoped_for_wl()) $base_path .= self::$_settings['whitelabel'] . '.';
+      if (!empty(self::$_settings['whitelabel']) && parent::is_scoped_for_wl()) $base_path .= self::$_settings['whitelabel']['name'] . '.';
       if (self::$_settings['host']) $base_path .= self::$_settings['host'] . '/';
       if (self::$_settings['prefix']) $base_path .= self::$_settings['prefix'];
       $url = $base_path . '/' . $path;
@@ -105,8 +99,6 @@
 
       curl_setopt_array($curl, [
         CURLINFO_HEADER_OUT => true,
-        CURLOPT_COOKIE => true,
-        CURLOPT_COOKIEFILE => true,
         CURLOPT_HEADER => true,
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_URL => $url,
@@ -116,25 +108,17 @@
         CURLOPT_USERAGENT => self::$_settings['user_agent']]);
 
       # request authentication through http basic
-      if (parent::is_scoped_for_wl()) {
-        list($uname, $upass) = [self::$_settings['whitelabel'], self::$_settings['password']];
+      if (!empty(self::$_settings['whitelabel'])) {
         curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-        curl_setopt($curl, CURLOPT_USERPWD, $uname . ':' . $upass);
-        parent::scope_wl(false);
-      }
-
-      # request authentication through user login
-      if (self::$_settings['token']) {
-        if (!is_array($params)) $params = [];
-        $params = array_merge(['token' => self::$_settings['token']], $params);
+        curl_setopt($curl, CURLOPT_USERPWD, join(':', self::$_settings['whitelabel']));
       }
 
       # request method handling is done prior to this step.
       # if a request needs to be post (e.g. on DELETE, PATCH etc...) it will be
-      if (!empty($params) && $mtd == self::POST) {
-        curl_setopt($curl, CURLOPT_POST, true);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($params));
-      }
+      if ($mtd == self::POST) curl_setopt($curl, CURLOPT_POST, true);
+      else if ($mtd != self::GET || $mtd != self::POST) curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $mtd);
+
+      if ($mtd != self::GET && !empty($params)) curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($params));
 
       $raw = curl_exec($curl);
       $curl_info = curl_getinfo($curl);

@@ -40,18 +40,16 @@
     private $_current_user = NULL;
     private $_settings = [
       'protocol' => 'https',
-      'whitelabel' => NULL,
-      'username' => NULL,
-      'password' => NULL,
+      'whitelabel' => [],
+      'user' => [],
       'host' => 'roomstyler.com',
       'prefix' => 'api',
-      'method_param' => 'method',
       'key' => NULL,
       'token' => NULL,
       'timeout' => 5,
       'language' => 'en',
       'connect_timeout' => 30,
-      'request_headers' => ['Content-Type: application/json'],
+      'request_headers' => ['Content-Type: application/json; charset=utf-8'],
       'debug' => false];
 
     public function __construct($settings) {
@@ -62,17 +60,28 @@
 
       RoomstylerRequest::OPTIONS($this->_settings);
 
-      if (!empty($this->_settings['username']) && !empty($this->_settings['username'])) {
-        $response = $this->users->login($this->_settings['username'], $this->_settings['password']);
-        if ($this->_settings['debug']) $response = $response['result'];
-        if ($response->successful()) {
-          if (property_exists($response, 'token')) {
-            $this->_current_user = $response;
-            $this->_settings['token'] = $response->token;
-            RoomstylerRequest::OPTIONS($this->_settings);
-          }
-        }
+      if (!empty($this->_settings['user'])) $this->login($this->_settings['user']['name'], $this->_settings['user']['password']);
+    }
+
+    public function login($name, $password) {
+      $response = $this->users->login($name, $password);
+
+      if ($this->_settings['debug']) $response = $response['result'];
+      if ($response->successful() && property_exists($response, 'token')) {
+        $this->_current_user = $response;
+        $this->_settings['token'] = $response->token();
+        RoomstylerRequest::OPTIONS($this->_settings);
+        return true;
       }
+
+      return false;
+    }
+
+    public function logout() {
+      $this->_current_user = NULL;
+      $this->_settings['token'] = NULL;
+      RoomstylerRequest::OPTIONS($this->_settings);
+      return true;
     }
 
     public function logged_in() {

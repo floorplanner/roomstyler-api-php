@@ -38,6 +38,10 @@
       return RoomstylerRequest::send('RoomstylerComment', "rooms/$id/comments", $params);
     }
 
+    public static function delete($id) {
+      return RoomstylerRequest::send('RoomstylerRoom', "rooms/$id", [], RoomstylerRequest::DELETE);
+    }
+
     public static function add_tags($id, $tags = []) {
       $tags = join(',', $tags);
       return RoomstylerRequest::send('RoomstylerRoom', "rooms/$id/tags", ['tags' => $tags], RoomstylerRequest::POST);

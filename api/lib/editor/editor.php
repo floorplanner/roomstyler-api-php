@@ -27,21 +27,30 @@
 
       # sets language if set, defaults to api default language
       if (isset($opts['language'])) $src_options['language'] = $opts['language'];
-      else $src_options['language'] = $this->_settings['language'];
+      else $src_options['lang'] = $this->_settings['language'];
 
       # opens specific room if set
-      if (isset($opts['room_url'])) $src_options['room_url'] = $opts['room_url'];
-
-      foreach ($src_options as $attr => $val) $src_options[$attr] = "$attr=$val";
-
-      $src = $this->_settings['protocol'] . '://';
-      if (parent::is_scoped_for_wl()) {
-        $src .= $this->_settings['whitelabel'] . '.';
-        parent::scope_wl(false);
+      if (isset($opts['room_url'])) {
+        $src_options['room_url'] = $this->room_url($opts['room_url']);
       }
-      $src = $src .= $this->_settings['host'] . '/embed' . '?' . join('&', $src_options);
 
-      return "<iframe src=\"$src\" {$attrs}></iframe>";
+      return "<iframe src=\"{$this->embed_url($src_options)}\" {$attrs}></iframe>";
+    }
+
+    private function embed_url($attrs) {
+      $src = $this->_settings['protocol'] . '://';
+
+      if (parent::is_scoped_for_wl()) $src .= $this->_settings['whitelabel'] . '.';
+      foreach ($attrs as $attr => $val) $attrs[$attr] = "$attr=$val";
+
+      return $src .= $this->_settings['host'] . '/embed' . '?' . join('&', $attrs);
+    }
+
+    private function room_url($url) {
+      $url = preg_replace('/^(www\.|https?:\/\/)/', '', $url);
+      if (parent::is_scoped_for_wl()) $url = $this->_settings['whitelabel']  . '.' . $url;
+
+      return urlencode($this->_settings['protocol'] . '://' . $url);
     }
 
   }
