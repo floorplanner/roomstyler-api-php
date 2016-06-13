@@ -20,8 +20,7 @@
           unset($args[$key]);
           $args[urlencode($key)] = urlencode($value);
         }
-      } else if (self::$_settings['token'])
-        $args = array_merge($args, ['token' => self::$_settings['token']]);
+      } else if (self::$_settings['token']) $args = array_merge($args, ['token' => self::$_settings['token']]);
 
       # if the request isn't GET then we don't want to add any query params
       $url = self::build_url($path, ($method == self::GET ? $args : []));

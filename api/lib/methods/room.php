@@ -67,6 +67,10 @@
       return RoomstylerRequest::send('RoomstylerRoom', "rooms/$id/render$mode", $params, RoomstylerRequest::POST);
     }
 
+    public static function chown($id, $user_id) {
+      return RoomstylerRequest::send('RoomstylerRoom', "rooms/$id/chown", ['user_id' => $user_id], RoomstylerRequest::POST);
+    }
+
   }
 
 ?>
