@@ -40,7 +40,11 @@
     private function embed_url($attrs) {
       $src = $this->_settings['protocol'] . '://';
 
-      if (parent::is_scoped_for_wl()) $src .= $this->_settings['whitelabel'] . '.';
+      if (parent::is_scoped_for_wl()) {
+        if ($this->_settings['whitelabel']) $src .= $this->_settings['whitelabel'] . '.';
+        parent::scope_wl(false);
+      }
+      
       foreach ($attrs as $attr => $val) $attrs[$attr] = "$attr=$val";
 
       return $src .= $this->_settings['host'] . '/embed' . '?' . join('&', $attrs);

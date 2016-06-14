@@ -80,7 +80,7 @@
 
     private static function build_url($path, $args = NULL) {
       $base_path = self::$_settings['protocol'] . '://';
-      if (!empty(self::$_settings['whitelabel']) && parent::is_scoped_for_wl()) $base_path .= self::$_settings['whitelabel']['name'] . '.';
+      if (self::$_settings['whitelabel'] && parent::is_scoped_for_wl()) $base_path .= self::$_settings['whitelabel']['name'] . '.';
       if (self::$_settings['host']) $base_path .= self::$_settings['host'] . '/';
       if (self::$_settings['prefix']) $base_path .= self::$_settings['prefix'];
       $url = $base_path . '/' . $path;
@@ -108,7 +108,9 @@
         CURLOPT_USERAGENT => self::$_settings['user_agent']]);
 
       # request authentication through http basic
-      if (!empty(self::$_settings['whitelabel'])) {
+      # here we need to filter for requests that only allow "normal authenticated user" access
+      # this is possible with a flag perhaps?
+      if (self::$_settings['whitelabel']) {
         curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
         curl_setopt($curl, CURLOPT_USERPWD, join(':', self::$_settings['whitelabel']));
       }
@@ -139,6 +141,7 @@
               'status' => $http_status,
               'errors' => $errors];
 
+      if (self::is_scoped_for_wl()) self::scope_wl(false);
       return $res;
     }
 
