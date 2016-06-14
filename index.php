@@ -14,16 +14,9 @@
   }
 
   # this file contains the $CONFIG definition and is excluded in .gitignore
+  # an example can be found in config.example.php
   require 'config.php';
   require 'api/rs_api.php';
 
   $api = new RoomstylerApi(['whitelabel' => $CONFIG['whitelabel_credentials'], 'user' => $CONFIG['user_credentials'], 'debug' => true]);
-
-  # rooms are not scoped on WL based on token, this still has to be manually added
-  $var = $api->wl->rooms->index();
-
-  # one should be able to call functions that manipulate or get more data / relational data
-  pp($var);
-
-  pp($api->rooms->index());
 ?>
