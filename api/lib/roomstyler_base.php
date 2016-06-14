@@ -23,17 +23,6 @@
       return self::$_scope_wl;
     }
 
-    protected function type() {
-      return $this->_type;
-    }
-
-    protected static function method_params($klass, $method) {
-      $reflection = new ReflectionMethod($klass, $method);
-      return array_map(function($param) {
-        return $param->getName();
-      }, $reflection->getParameters());
-    }
-
     protected static function model_class_name($prop) {
       $prop = ucfirst(self::to_singular($prop));
       return "Roomstyler{$prop}";

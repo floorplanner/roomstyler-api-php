@@ -26,6 +26,7 @@
 
   require_once 'lib/methods/method_base.php';
   require_once 'lib/methods/user.php';
+  require_once 'lib/methods/collection.php';
   require_once 'lib/methods/contest.php';
   require_once 'lib/methods/room.php';
   require_once 'lib/methods/room_render.php';
@@ -58,7 +59,7 @@
 
       $this->_settings['user_agent'] = $this->generate_user_agent();
 
-      RoomstylerRequest::OPTIONS($this->_settings);
+      RoomstylerRequest::SETTINGS($this->_settings);
 
       if (!empty($this->_settings['user'])) $this->login($this->_settings['user']['name'], $this->_settings['user']['password']);
     }
@@ -69,8 +70,8 @@
       if ($this->_settings['debug']) $response = $response['result'];
       if ($response->successful() && property_exists($response, 'token')) {
         $this->_current_user = $response;
-        $this->_settings['token'] = $response->token();
-        RoomstylerRequest::OPTIONS($this->_settings);
+        $this->_settings['token'] = $response->token;
+        RoomstylerRequest::SETTINGS($this->_settings);
         return true;
       }
 
@@ -80,7 +81,7 @@
     public function logout() {
       $this->_current_user = NULL;
       $this->_settings['token'] = NULL;
-      RoomstylerRequest::OPTIONS($this->_settings);
+      RoomstylerRequest::SETTINGS($this->_settings);
       return true;
     }
 

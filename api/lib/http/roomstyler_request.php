@@ -3,6 +3,7 @@
   class RoomstylerRequest extends RoomstylerBase {
 
     private static $_settings = [];
+    private static $api;
 
     const DELETE = 'DELETE';
     const POST = 'POST';
@@ -10,11 +11,11 @@
     const PUT = 'PUT';
     const PATCH = 'PATCH';
 
-    public static function OPTIONS(array $arr) {
+    public static function SETTINGS(array $arr) {
       self::$_settings = array_merge(self::$_settings, $arr);
     }
 
-    public static function send($obj, $type, $path, array $args = [], $method = self::GET) {
+    public static function send($type, $path, array $args = [], $method = self::GET) {
       if ($method == self::GET) {
         foreach ($args as $key => $value) {
           unset($args[$key]);
@@ -28,14 +29,14 @@
 
       if ($type == NULL) return $res;
 
-      $final_res = self::collection_from_response($type, $res, $obj);
+      $final_res = self::collection_from_response($type, $res);
 
       if (!self::$_settings['debug']) return $final_res;
       return [
         'result' => $final_res,
         'request_info' => new RoomstylerResponse([
-          'path' => $path,
-          'full_path' => $url,
+          'path' => str_replace('\/\/', '', $path),
+          'full_path' => str_replace('\/\/', '', $url),
           'arguments' => $args,
           'method' => $method,
           'status' => $res['status'],
@@ -44,7 +45,7 @@
           'errors' => $res['errors']])];
     }
 
-    private static function collection_from_response($type, $res, $mtd_obj) {
+    private static function collection_from_response($type, $res) {
       # check if JSON response root node contains a property (either plural or singular) for what we're trying to fetch
       # if found, reassign $res to this property and continue creating collection
       $singular_type = strtolower(str_replace('Roomstyler', '', $type));
@@ -71,9 +72,9 @@
       # if result is an array then we want to return an array of wrapped objects
       if (is_array($res))
         # if the count is only one, there's probably a root node wrapping the data
-        if (count($res) == 1) $out = new $type($mtd_obj, array_shift($res), $errors, $status);
-        else foreach($res as $_ => $obj) $out[] = new $type($mtd_obj, $obj, $errors, $status);
-      else $out = new $type($mtd_obj, $res, $errors, $status);
+        if (count($res) == 1) $out = new $type(array_shift($res), $errors, $status);
+        else foreach($res as $_ => $obj) $out[] = new $type($obj, $errors, $status);
+      else $out = new $type($res, $errors, $status);
       return $out;
     }
 
