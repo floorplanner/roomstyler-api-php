@@ -3,7 +3,7 @@
   class RoomstylerMaterialMethods extends RoomstylerMethodBase {
 
     public function find($id, $params = []) {
-      return RoomstylerRequest::send('RoomstylerMaterial', "materials/$id", $params);
+      return (new RoomstylerRequest($this->_settings, $this->_whitelabeled))->send('RoomstylerMaterial', "materials/$id", $params);
     }
 
   }

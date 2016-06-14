@@ -39,6 +39,7 @@
     const VERSION = "1.0";
 
     private $_current_user = NULL;
+    private $_whitelabeled = false;
     private $_settings = [
       'protocol' => 'https',
       'whitelabel' => [],
@@ -53,13 +54,11 @@
       'request_headers' => ['Content-Type: application/json; charset=utf-8'],
       'debug' => false];
 
-    public function __construct($settings) {
+    public function __construct(array $settings) {
       foreach ($this->_settings as $setting => $value)
         if (array_key_exists($setting, $settings)) $this->_settings[$setting] = $settings[$setting];
 
       $this->_settings['user_agent'] = $this->generate_user_agent();
-
-      RoomstylerRequest::SETTINGS($this->_settings);
 
       if (!empty($this->_settings['user'])) $this->login($this->_settings['user']['name'], $this->_settings['user']['password']);
     }
@@ -71,7 +70,6 @@
       if ($response->successful() && property_exists($response, 'token')) {
         $this->_current_user = $response;
         $this->_settings['token'] = $response->token;
-        RoomstylerRequest::SETTINGS($this->_settings);
         return true;
       }
 
@@ -81,7 +79,6 @@
     public function logout() {
       $this->_current_user = NULL;
       $this->_settings['token'] = NULL;
-      RoomstylerRequest::SETTINGS($this->_settings);
       return true;
     }
 
@@ -89,7 +86,7 @@
       return $this->_current_user != NULL;
     }
 
-    public function current_user() {
+    public function user() {
       return $this->_current_user;
     }
 
@@ -103,17 +100,21 @@
     public function __get($prop) {
       switch ($prop) {
         case 'wl':
-          parent::scope_wl(true);
-          return $this;
+          $this->_whitelabeled = true;
+          $out = $this;
         break;
         case 'editor':
-          return new RoomstylerEditor($this->_settings);
+          $out = new RoomstylerEditor($this->_settings, $this->_whitelabeled);
         break;
         default:
           # no scope, no authentication
           $class_name = parent::method_class_name($prop);
-          return new $class_name($this->_settings['debug']);
+          $out = new $class_name($this->_settings, $this->_whitelabeled);
+        break;
       }
+
+      if ($prop != 'wl') $this->_whitelabeled = false;
+      return $out;
     }
 
     protected function generate_user_agent() {

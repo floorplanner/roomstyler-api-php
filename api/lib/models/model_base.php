@@ -8,12 +8,15 @@
 
     public $id = NULL;
 
-    public function __construct($row, $errors = [], $status = 0) {
-      parent::__construct();
+    public function __construct($row, $errors = [], $status = 0, $parent_attrs = false) {
       $this->_errors = $errors;
       $this->_http_status = $status;
+
+      # if an object is returned, convert it to a key-value array containing properties and values
       if (is_object($row)) $row = get_object_vars($row);
       if (is_array($row)) {
+        # setting parent properties on child if needed
+        if (is_array($parent_attrs)) $row = array_merge($row, $parent_attrs);
         foreach ($row as $field => $value) $this->$field = $value;
         $this->_fields_set = true;
       }

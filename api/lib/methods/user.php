@@ -4,15 +4,15 @@
 
     public function find($ids, $params = []) {
       if (is_array($ids)) $ids = implode($ids, ',');
-      return RoomstylerRequest::send('RoomstylerUser', "users/$ids", $params);
+      return (new RoomstylerRequest($this->_settings, $this->_whitelabeled))->send('RoomstylerUser', "users/$ids", $params);
     }
 
     public function create($params) {
-      return RoomstylerRequest::send('RoomstylerUser', "users", ['user' => $params], RoomstylerRequest::POST);
+      return (new RoomstylerRequest($this->_settings, $this->_whitelabeled))->send('RoomstylerUser', "users", ['user' => $params], RoomstylerRequest::POST);
     }
 
     public function login($username, $password) {
-      return RoomstylerRequest::send('RoomstylerUser', "users/login", ['email' => $username, 'password' => $password], RoomstylerRequest::POST);
+      return (new RoomstylerRequest($this->_settings, $this->_whitelabeled))->send('RoomstylerUser', "users/login", ['email' => $username, 'password' => $password], RoomstylerRequest::POST);
     }
 
   }

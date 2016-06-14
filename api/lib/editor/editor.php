@@ -2,22 +2,21 @@
 
   class RoomstylerEditor extends RoomstylerBase {
 
-    private static $scope_wl = false;
-
     private $_settings = [];
+    private $_whitelabeled = false;
     private $html_opts = ['frameborder' => 0, 'width' => 1024, 'height' => 768];
 
-    public function __construct(array $settings, array $html_opts = []) {
+    public function __construct(array $settings, $whitelabeled = false) {
       $this->_settings = $settings;
-      $this->html_opts = array_merge($this->html_opts, $html_opts);
+      $this->_whitelabeled = $whitelabeled;
     }
 
     public function embed(array $opts = [], array $html_opts = []) {
       $html_attrs = [];
       $src_options = [];
-      $merged_attrs = array_merge($this->html_opts, $html_opts);
+      $html_opts = array_merge($this->html_opts, $html_opts);
 
-      foreach ($merged_attrs as $attr => $val) $html_attrs[] = "$attr=\"$val\"";
+      foreach ($html_opts as $attr => $val) $html_attrs[] = "$attr=\"$val\"";
 
       $attrs = join(' ', $html_attrs);
 
@@ -40,11 +39,8 @@
     private function embed_url($attrs) {
       $src = $this->_settings['protocol'] . '://';
 
-      if (parent::is_scoped_for_wl()) {
-        if ($this->_settings['whitelabel']) $src .= $this->_settings['whitelabel'] . '.';
-        parent::scope_wl(false);
-      }
-      
+      if ($this->_whitelabeled && $this->_settings['whitelabel']) $src .= $this->_settings['whitelabel'] . '.';
+
       foreach ($attrs as $attr => $val) $attrs[$attr] = "$attr=$val";
 
       return $src .= $this->_settings['host'] . '/embed' . '?' . join('&', $attrs);
@@ -52,7 +48,8 @@
 
     private function room_url($url) {
       $url = preg_replace('/^(www\.|https?:\/\/)/', '', $url);
-      if (parent::is_scoped_for_wl()) $url = $this->_settings['whitelabel']  . '.' . $url;
+
+      if ($this->_whitelabeled) $url = $this->_settings['whitelabel']  . '.' . $url;
 
       return urlencode($this->_settings['protocol'] . '://' . $url);
     }

@@ -3,7 +3,7 @@
   class RoomstylerCategoryMethods extends RoomstylerMethodBase {
 
     public function index($params = []) {
-      return RoomstylerRequest::send('RoomstylerCategory', 'categories', $params);
+      return (new RoomstylerRequest($this->_settings, $this->_whitelabeled))->send('RoomstylerCategory', 'categories', $params);
     }
 
   }
