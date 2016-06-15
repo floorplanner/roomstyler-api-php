@@ -39,7 +39,7 @@ After requiring this file you can get started by creating an instance of the API
 
 #### Anonymous API access
 
-When you like to read data all day
+When you want to read public data
 
 ```php
 <?php
@@ -54,7 +54,7 @@ When you like to read data all day
 
 #### User API access
 
-For personal use, read global data or perform actions on rooms as the signed in user (whitelabel user also possible)
+For personal use, read global data or perform actions on rooms as the signed in user (whitelabel users can also login)
 
 ```php
 <?php
@@ -70,7 +70,7 @@ For personal use, read global data or perform actions on rooms as the signed in 
 
 #### Whitelabel API access
 
-For when you want to read global data and your own whitelabel data
+For when you want to read global data and read, write or modify your own whitelabel data
 
 ```php
 <?php
@@ -86,7 +86,7 @@ For when you want to read global data and your own whitelabel data
 
 #### Godmode API access
 
-For the retailers who want to maximize their integration potential, this one allows you to read and write to the data that belongs to you
+For the those who want to maximize their integration potential, this allows you to read and write and modify data of your whitelabel and your own rooms and perform actions on rooms as the signed in user
 
 ```php
 <?php
@@ -178,13 +178,13 @@ RoomstylerRoomMethods->index($params = []);
 **Parameters**
 
 * `$params` - Optional (Defaults do get set) - an array with the following keys:
-  * `limit` - Optional (Default 50 unless overwritten) - A number between (and including) 1 and 50
-  * `page` - Optional (Default 1 unless overwritten) - A number that defines the page you're on (useful for pagination)
+  * `limit` - Optional (Default `50`) - A number between (and including) 1 and 50
+  * `page` - Optional (Default `1`) - A number that defines the page you're on (useful for pagination)
   * `category` - Optional (see `RoomstylerSearchMeta`) - Filters results within specified category
   * `last_updated` - Optional - List rooms updated after a given timestamp
   * `created` - Optional - List rooms created after a given timestamp
-  * `skip_last_updated` - Optional (Recommended, Default true) - skips fetching last updated room, significantly speeds up requests
-  * `skip_total` - Optional (Recommended, Default true) - skips fetching a count of all rooms, significantly speeds up requests
+  * `skip_last_updated` - Optional (Recommended, Default `true`) - skips fetching last updated room, significantly speeds up requests
+  * `skip_total` - Optional (Recommended, Default `true`) - skips fetching a count of all rooms, significantly speeds up requests
   * `order` - Optional - Order results based on a room attribute (see a `RoomstylerRoom` object for a list of properties)
   * `direction` - Required if `order` specified - either `asc` or `desc`
   * `user_id` - Optional - fetch rooms owned by this user (requires user access)
@@ -224,7 +224,7 @@ RoomstylerRoomMethods->find($id);
 
 **Parameters**
 
-* `$id` - The room id of the room to fetch
+* `$id` - The id of the room to fetch
 
 #### Searching rooms
 
@@ -247,8 +247,8 @@ RoomstylerRoomMethods->search($params = []);
 
 * `$params` - Optional (Defaults do get set) - an array with the following keys:
   * `q` - Required - A search string
-  * `limit` - Optional (Default 50 unless overwritten) - A number between (and including) 1 and 50
-  * `page` - Optional (Default 1 unless overwritten) - A number that defines the page you're on (useful for pagination)
+  * `limit` - Optional (Default `50`) - A number between (and including) 1 and 50
+  * `page` - Optional (Default `1`) - A number that defines the page you're on (useful for pagination)
   * `since` - Optional (see `RoomstylerSearchMeta`) - Filters results within specified timeframe
   * `category` - Optional (see `RoomstylerSearchMeta`) - Filters results within specified category
   * `style` - Optional (see `RoomstylerSearchMeta`) - Filters results within specified style
@@ -274,8 +274,8 @@ RoomstylerRoomMethods->panoramas($params = ['limit' => 50, 'page' => 1]);
 **Parameters**
 
 * `$params` - Optional (Defaults do get set) - an array with the following keys:
-  * `limit` - Optional (Default 50 unless overwritten) - A number between (and including) 1 and 50
-  * `page` - Optional (Default 1 unless overwritten) - A number that defines the page you're on (useful for pagination)
+  * `limit` - Optional (Default `50`) - A number between (and including) 1 and 50
+  * `page` - Optional (Default `1`) - A number that defines the page you're on (useful for pagination)
   * `since` - Optional (see `RoomstylerSearchMeta`) - Filters results within specified timeframe
   * `skip_total` - Optional - skips counting of panorama's, speeds up request slightly if `true`
 
@@ -490,7 +490,7 @@ RoomstylerRoom->add_tags($tags)
 
 * `$tags` - Required - An array of individual tags or a string of comma-seperated tags
 
-#### Remove (a) tag(s) to a room
+#### Remove (a) tag(s) from a room
 
 **PHP snippet**
 
