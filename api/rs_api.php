@@ -58,7 +58,7 @@
       foreach ($this->_settings as $setting => $value)
         if (array_key_exists($setting, $settings)) $this->_settings[$setting] = $settings[$setting];
 
-      $this->_settings['user_agent'] = $this->generate_user_agent();
+      $this->set_user_agent();
 
       if (!empty($this->_settings['user'])) $this->login($this->_settings['user']['name'], $this->_settings['user']['password']);
     }
@@ -101,6 +101,7 @@
       switch ($prop) {
         case 'wl':
           $this->_whitelabeled = true;
+          $this->set_user_agent();
           $out = $this;
         break;
         case 'editor':
@@ -113,14 +114,22 @@
         break;
       }
 
-      if ($prop != 'wl') $this->_whitelabeled = false;
+      if ($prop != 'wl') {
+        $this->_whitelabeled = false;
+        $this->set_user_agent();
+      }
+
       return $out;
     }
 
-    protected function generate_user_agent() {
-      return join(' ', [
+    protected function set_user_agent() {
+      $domain = $this->_settings['host'];
+      if ($this->_whitelabeled) $domain = $this->_settings['whitelabel']['name'] . '.' . $domain;
+
+      $this->_settings['user_agent'] = join(' ', [
         'RoomstylerApi/' . self::VERSION,
-        "({$this->_settings['protocol']}://{$this->_settings['host']})"]);
+        'Type/' . ($this->_whitelabeled ? 'whitelabeled' : 'normal'),
+        "({$this->_settings['protocol']}://{$domain})"]);
     }
 
   }

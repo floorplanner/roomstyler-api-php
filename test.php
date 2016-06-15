@@ -39,7 +39,7 @@
   # pp('ROOM PANORAMAS', $api->rooms->panoramas(['limit' => 5]));
 
   # actions on room
-   $room = $api->rooms->find(14075620);
+  # $room = $api->rooms->find(14075620);
 
   # room [comment, toggle_love, chown] cannot be executed without regular authentication of a user
   # pp('ROOM PLACE COMMENT', $room->comment('with user credentials and without wl credentials'));
