@@ -3,7 +3,7 @@
   class RoomstylerRoomMethods extends RoomstylerMethodBase {
 
     public function index($params = []) {
-      $params = array_merge(['limit' => 50, 'skip_total' => true, 'skip_last_updated' => true], $params);
+      $params = array_merge(['limit' => 50, 'page' => 1, 'skip_total' => true, 'skip_last_updated' => true], $params);
       if (!isset($params['whitelabel']) && $this->_whitelabeled) $params['whitelabel'] = $this->_settings['whitelabel']['name'];
       return (new RoomstylerRequest($this->_settings, $this->_whitelabeled))->send('RoomstylerRoom', "rooms", $params);
     }
@@ -14,7 +14,7 @@
     }
 
     public function search($params = []) {
-      $params = array_merge(['limit' => 50], $params);
+      $params = array_merge(['limit' => 50, 'page' => 1], $params);
       return (new RoomstylerRequest($this->_settings, $this->_whitelabeled))->send('RoomstylerRoom', "rooms/search", $params);
     }
 

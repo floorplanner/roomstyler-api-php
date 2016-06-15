@@ -46,7 +46,6 @@
       'user' => [],
       'host' => 'roomstyler.com',
       'prefix' => 'api',
-      'key' => NULL,
       'token' => NULL,
       'timeout' => 5,
       'language' => 'en',
@@ -54,7 +53,7 @@
       'request_headers' => ['Content-Type: application/json; charset=utf-8'],
       'debug' => false];
 
-    public function __construct(array $settings) {
+    public function __construct(array $settings = []) {
       foreach ($this->_settings as $setting => $value)
         if (array_key_exists($setting, $settings)) $this->_settings[$setting] = $settings[$setting];
 

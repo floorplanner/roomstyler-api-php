@@ -1,5 +1,4 @@
 <?php
-
   ini_set('display_errors', 1);
   error_reporting(E_ALL);
   date_default_timezone_set('CET');
@@ -13,7 +12,11 @@
     }
   }
 
+  # remove this line if you don't need to do any writing to the API
+  require 'config.example.php';
   require 'index.php';
+
+  $api = new RoomstylerApi(['whitelabel' => $CONFIG['whitelabel_credentials'], 'user' => $CONFIG['user_credentials']]);
 
   ################################################################################
   #                                                                              #
