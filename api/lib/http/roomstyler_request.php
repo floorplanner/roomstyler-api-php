@@ -2,7 +2,8 @@
 
   class RoomstylerRequest extends RoomstylerBase {
 
-    private $_settings = [];
+    protected $_settings = [];
+    protected $_whitelabeled = false;
 
     const DELETE = 'DELETE';
     const POST = 'POST';
@@ -57,7 +58,7 @@
 
       if ($type == NULL) return $res;
 
-      $final_res = self::collection_from_response($type, $res, $parent_attrs);
+      $final_res = $this->collection_from_response($type, $res, $parent_attrs);
 
       if (!$this->_settings['debug']) return $final_res;
       return [
@@ -140,21 +141,7 @@
       return $res;
     }
 
-    private static function parse_header_str($header_str) {
-      $out = [];
-      $header_lines = preg_split('/\r\n|\n|\r/', $header_str);
-      $header_lines = array_filter($header_lines, function($value) { return strlen($value) > 0; });
-
-      foreach ($header_lines as $line) {
-        $split_header = explode(': ', $line);
-        if (count($split_header) == 1) $out['HTTP'][] = $split_header[0];
-        else $out[$split_header[0]] = $split_header[1];
-      }
-
-      return $out;
-    }
-
-    private static function collection_from_response($type, $res, $parent_attrs) {
+    private function collection_from_response($type, $res, $parent_attrs) {
       # check if JSON response root node contains a property (either plural or singular) for what we're trying to fetch
       # if found, reassign $res to this property and continue creating collection
       $singular_type = strtolower(str_replace('Roomstyler', '', $type));
@@ -183,9 +170,23 @@
       # if result is an array then we want to return an array of wrapped objects
       if (is_array($res))
         # if the count is only one, there's probably a root node wrapping the data
-        if (count($res) == 1) $out = new $type(array_shift($res), $errors, $status, $parent_attrs);
-        else foreach($res as $_ => $obj) $out[] = new $type($obj, $errors, $status, $parent_attrs);
-      else $out = new $type($res, $errors, $status, $parent_attrs);
+        if (count($res) == 1) $out = new $type(array_shift($res), $this->_settings, $this->_whitelabeled, $errors, $status, $parent_attrs);
+        else foreach($res as $_ => $obj) $out[] = new $type($obj, $this->_settings, $this->_whitelabeled, $errors, $status, $parent_attrs);
+      else $out = new $type($res, $this->_settings, $this->_whitelabeled, $errors, $status, $parent_attrs);
+      return $out;
+    }
+
+    private static function parse_header_str($header_str) {
+      $out = [];
+      $header_lines = preg_split('/\r\n|\n|\r/', $header_str);
+      $header_lines = array_filter($header_lines, function($value) { return strlen($value) > 0; });
+
+      foreach ($header_lines as $line) {
+        $split_header = explode(': ', $line);
+        if (count($split_header) == 1) $out['HTTP'][] = $split_header[0];
+        else $out[$split_header[0]] = $split_header[1];
+      }
+
       return $out;
     }
 

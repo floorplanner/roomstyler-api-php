@@ -18,6 +18,11 @@
       return (new RoomstylerRequest($this->_settings, $this->_whitelabeled))->send('RoomstylerRoom', "rooms/search", $params);
     }
 
+    public function panoramas($params = []) {
+      $params = array_merge(['limit' => 50, 'page' => 1], $params);
+      return (new RoomstylerRequest($this->_settings, $this->_whitelabeled))->send('RoomstylerRoom', "rooms/panoramas", $params);
+    }
+
     public function search_meta() {
       return (new RoomstylerRequest($this->_settings, $this->_whitelabeled))->send('RoomstylerSearchMeta', "rooms/search/meta");
     }

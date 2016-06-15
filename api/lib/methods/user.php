@@ -8,7 +8,8 @@
     }
 
     public function create($params) {
-      return (new RoomstylerRequest($this->_settings, $this->_whitelabeled))->send('RoomstylerUser', "users", ['user' => $params], RoomstylerRequest::POST);
+      $all_params = ['user' => $params, 'auth_type' => RoomstylerRequest::AUTH_API];
+      return (new RoomstylerRequest($this->_settings, $this->_whitelabeled))->send('RoomstylerUser', "users", $all_params, RoomstylerRequest::POST);
     }
 
     public function login($username, $password) {

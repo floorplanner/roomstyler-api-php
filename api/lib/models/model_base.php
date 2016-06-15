@@ -5,12 +5,16 @@
     private $_fields_set = false;
     private $_errors = [];
     private $_http_status = 0;
+    protected $_settings = [];
+    protected $_whitelabeled = false;
 
     public $id = NULL;
 
-    public function __construct($row, $errors = [], $status = 0, $parent_attrs = false) {
+    public function __construct($row, $settings, $whitelabeled, $errors = [], $status = 0, $parent_attrs = false) {
       $this->_errors = $errors;
       $this->_http_status = $status;
+      $this->_settings = $settings;
+      $this->_whitelabeled = $whitelabeled;
 
       # if an object is returned, convert it to a key-value array containing properties and values
       if (is_object($row)) $row = get_object_vars($row);

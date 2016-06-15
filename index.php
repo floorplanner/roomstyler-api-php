@@ -6,5 +6,5 @@
   require 'config.php';
   require 'api/rs_api.php';
 
-  $api = new RoomstylerApi(['whitelabel' => $CONFIG['whitelabel_credentials'], 'user' => $CONFIG['user_credentials'], 'debug' => false]);
+  $api = new RoomstylerApi(['whitelabel' => $CONFIG['whitelabel_credentials'], 'user' => $CONFIG['user_credentials']]);
 ?>
