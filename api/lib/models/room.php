@@ -34,7 +34,6 @@
     }
 
     public function comment($content) {
-      pp($this);
       $params = ['comment' => ['comment' => $content], 'auth_type' => RoomstylerRequest::AUTH_USER];
       return (new RoomstylerRequest($this->_settings, $this->_whitelabeled))->send('RoomstylerComment', "rooms/{$this->id}/comments", $params, RoomstylerRequest::POST);
     }
