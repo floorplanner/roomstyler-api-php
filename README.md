@@ -5,6 +5,10 @@ This is a PHP library that makes it easier to use the Roomstyler RESTful API.
 It is intended to be a wrapper for the API so that you, as user of the API
 will never have to write your own HTTP requests but instead can simply call a method to do it for you.
 
+---
+**This document is not yet finished, a lot of the documentation is still being worked on!**
+---
+
 ## Installation
 
 I am going to assume here that you already have your PHP development stack installed or can atleast run PHP.
