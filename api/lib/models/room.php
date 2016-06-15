@@ -34,13 +34,11 @@
     }
 
     public function comment($content) {
-      $params = ['comment' => ['comment' => $content], 'auth_type' => RoomstylerRequest::AUTH_USER];
-      return (new RoomstylerRequest($this->_settings, $this->_whitelabeled))->send('RoomstylerComment', "rooms/{$this->id}/comments", $params, RoomstylerRequest::POST);
+      return (new RoomstylerRequest($this->_settings, $this->_whitelabeled))->send('RoomstylerComment', "rooms/{$this->id}/comments", ['comment' => ['comment' => $content]], RoomstylerRequest::POST, RoomstylerRequest::AUTH_USER);
     }
 
     public function toggle_love($params = []) {
-      $params = array_merge($params, ['auth_type' => RoomstylerRequest::AUTH_USER]);
-      return (new RoomstylerRequest($this->_settings, $this->_whitelabeled))->send('RoomstylerRoom', "rooms/{$this->id}/toggle_like", $params, RoomstylerRequest::POST);
+      return (new RoomstylerRequest($this->_settings, $this->_whitelabeled))->send('RoomstylerRoom', "rooms/{$this->id}/toggle_like", $params, RoomstylerRequest::POST, RoomstylerRequest::AUTH_USER);
     }
 
     public function render($mode = '', $params = []) {
@@ -51,8 +49,7 @@
     }
 
     public function chown($user_id) {
-      $params = ['user_id' => $user_id, 'auth_type' => RoomstylerRequest::AUTH_API];
-      return (new RoomstylerRequest($this->_settings, $this->_whitelabeled))->send('RoomstylerRoom', "rooms/{$this->id}/chown", $params, RoomstylerRequest::POST);
+      return (new RoomstylerRequest($this->_settings, $this->_whitelabeled))->send('RoomstylerRoom', "rooms/{$this->id}/chown", ['user_id' => $user_id], RoomstylerRequest::POST, RoomstylerRequest::AUTH_API);
     }
 
   }

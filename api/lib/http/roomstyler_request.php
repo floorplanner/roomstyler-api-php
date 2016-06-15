@@ -28,21 +28,8 @@
       $this->_settings = array_merge($this->_settings, $arr);
     }
 
-    public function send($type, $path, array $args = [], $method = self::GET) {
-      $parent_attrs = [];
-      $auth_type = self::AUTH_ALL;
-
-      # child < parent attributes inherited from parent
-      if (isset($args['additional_attrs'])) {
-        $parent_attrs = $args['additional_attrs'];
-        unset($args['additional_attrs']);
-      }
-
-      # allow only one type of verification, otherwise send all possible
-      if (isset($args['auth_type'])) {
-        $auth_type = $args['auth_type'];
-        unset($args['auth_type']);
-      }
+    public function send($type, $path, array $args = [], $method = self::GET, $auth_type = self::AUTH_ALL) {
+      $parent_attrs = isset($this->_settings['parent_attrs']) ? $this->_settings['parent_attrs'] : [];
 
       if ($method == self::GET) {
         foreach ($args as $key => $value) {

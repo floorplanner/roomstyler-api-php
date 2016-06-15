@@ -39,7 +39,7 @@
   # pp('ROOM PANORAMAS', $api->rooms->panoramas(['limit' => 5]));
 
   # actions on room
-  # $room = $api->rooms->find(14075620)['result'];
+   $room = $api->rooms->find(14075620);
 
   # room [comment, toggle_love, chown] cannot be executed without regular authentication of a user
   # pp('ROOM PLACE COMMENT', $room->comment('with user credentials and without wl credentials'));
@@ -77,7 +77,7 @@
   # pp('USER CREATE', $api->users->create(['username' => 'some_username', 'password' => 'some_password', 'email' => 'some_email@example.tld']));
 
   # actions on a user
-  $user = $api->users->find(972691)['result'];
+  # $user = $api->users->find(972691);
 
   # pp('USER DELETE', $user->delete());
   # pp('USER LOVED_ROOMS', $user->loved_rooms());
@@ -95,7 +95,7 @@
   # pp('CONTEST FIND', $api->contests->find(1317));
 
   # actions on contest
-  # $contest = $api->contests->find(1317)['result'];
+  # $contest = $api->contests->find(1317);
 
   # pp('CONTEST ENTRIES', $contest->entries());
 

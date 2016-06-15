@@ -7,8 +7,8 @@
   }
 
   public function entries($params = []) {
-    $params = array_merge($params, ['additional_attrs' => ['contest_id' => $this->id], 'auth_type' => RoomstylerRequest::AUTH_USER]);
-    return (new RoomstylerRequest($this->_settings, $this->_whitelabeled))->send('RoomstylerContestEntry', "contests/{$this->id}/contest_entries", $params);
+    $settings = array_merge($this->_settings, ['parent_attrs' => ['contest_id' => $this->id]]);
+    return (new RoomstylerRequest($settings, $this->_whitelabeled))->send('RoomstylerContestEntry', "contests/{$this->id}/contest_entries", $params, RoomstylerRequest::GET, RoomstylerRequest::AUTH_USER);
   }
 
   }
