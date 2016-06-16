@@ -719,4 +719,49 @@ RoomstylerUser->loved_rooms($params = [])
 
 **Parameters**
 
+* `$params` - An array containing the following keys
+  * `page` - Optional - The page on which you're on (sets query offset to `(page - 1) * per_page`)
+  * `per_page` - Optional - The amount of results to display on a page
+  * `skip_total` - Optional (Default `true`) - skips counting results, speeds up query slightly
+
+#### Get user collections
+
+**PHP snippet**
+
+```php
+<?php
+  print_r($user->collections());
+  # => [RoomstylerCollection{}, RoomstylerCollection{}, ...]
+?>
+```
+
+**Method signature**
+
+```
+RoomstylerUser->collections()
+```
+
+**Parameters**
+
 * None
+
+#### Get specific user collection
+
+**PHP snippet**
+
+```php
+<?php
+print_r($user->collection(44));
+# => RoomstylerCollection{}
+?>
+```
+
+**Method signature**
+
+```
+RoomstylerUser->collection($id)
+```
+
+**Parameters**
+
+* `$id` - Required - which of the users' collections to fetch

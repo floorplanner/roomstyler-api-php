@@ -7,6 +7,7 @@
     }
 
     public function loved_rooms($params = []) {
+      $params = array_merge(['skip_total' => true], $params);
       return (new RoomstylerRequest($this->_settings, $this->_whitelabeled))->send('RoomstylerRoom', "users/{$this->id}/rooms_loved", $params);
     }
 
