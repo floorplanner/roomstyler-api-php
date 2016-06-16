@@ -6,7 +6,7 @@ It is intended to be a wrapper for the API so that you, as user of the API
 will never have to write your own HTTP requests but instead can simply call a method to do it for you.
 
 ---
-**This document is not yet finished, a lot of the documentation is still being worked on!**
+This document is not yet finished, a lot of the documentation is still being worked on!
 ---
 
 ## Installation
@@ -14,7 +14,7 @@ will never have to write your own HTTP requests but instead can simply call a me
 I am going to assume here that you already have your PHP development stack installed or can atleast run PHP.
 
 ```
-~ $ cd project-root
+~$ cd project-root
 project-root $ git clone git@github.com:SidOfc/roomstyler-api-php.git
 ```
 
@@ -115,7 +115,7 @@ After doing this setup you should probably run a simple test to check if you can
 
 #### More configuration options
 
-We just talked about the `user` and `whitelabel` options that can be passed to the constructor of the `RoomstylerApi` but there are more options:
+We just talked about the `user` and `whitelabel` options that can be passed to the constructor of the `RoomstylerApi` class but there are more options:
 
 * protocol
   * _default: `https`_  
@@ -158,7 +158,28 @@ The option you'll most likely be using is `debug` which allows you to take a pee
 
 ### Aggregation
 
-#### Fetching rooms
+#### <a name="search_meta"></a> Getting search meta data
+
+**PHP snippet**
+
+```php
+<?php
+  print_r($rsapi->rooms->search_meta());
+  # => RoomstylerSearchMeta{}
+?>
+```
+
+**Method signature**
+
+```
+RoomstylerRoomMethods->search_meta();
+```
+
+**Parameters**
+
+* None
+
+#### <a name="fetching_rooms"></a> Fetching rooms
 
 **PHP snippet**
 
@@ -180,7 +201,7 @@ RoomstylerRoomMethods->index($params = []);
 * `$params` - Optional (Defaults do get set) - an array with the following keys:
   * `limit` - Optional (Default `50`) - A number between (and including) 1 and 50
   * `page` - Optional (Default `1`) - A number that defines the page you're on (useful for pagination)
-  * `category` - Optional (see `RoomstylerSearchMeta`) - Filters results within specified category
+  * `category` - Optional ([see `RoomstylerSearchMeta`](#search_meta)) - Filters results within specified category
   * `last_updated` - Optional - List rooms updated after a given timestamp
   * `created` - Optional - List rooms created after a given timestamp
   * `skip_last_updated` - Optional (Recommended, Default `true`) - skips fetching last updated room, significantly speeds up requests
@@ -204,6 +225,8 @@ RoomstylerRoomMethods->index($params = []);
   # => [RoomstylerRoom{}, RoomstylerRoom{}, ...]
 ?>
 ```
+
+**Method signature and parameters: see [Fetching Rooms](#fetching_rooms)**
 
 #### Finding a specific room
 
@@ -249,9 +272,9 @@ RoomstylerRoomMethods->search($params = []);
   * `q` - Required - A search string
   * `limit` - Optional (Default `50`) - A number between (and including) 1 and 50
   * `page` - Optional (Default `1`) - A number that defines the page you're on (useful for pagination)
-  * `since` - Optional (see `RoomstylerSearchMeta`) - Filters results within specified timeframe
-  * `category` - Optional (see `RoomstylerSearchMeta`) - Filters results within specified category
-  * `style` - Optional (see `RoomstylerSearchMeta`) - Filters results within specified style
+  * `since` - Optional ([see `RoomstylerSearchMeta`](#search_meta)) - Filters results within specified timeframe
+  * `category` - Optional ([see `RoomstylerSearchMeta`](#search_meta)) - Filters results within specified category
+  * `style` - Optional ([see `RoomstylerSearchMeta`](#search_meta)) - Filters results within specified style
   * `kind` - Optional - If it has the value of `own` it will search through the logged in users rooms (requires user access)
 
 #### Fetching panoramas
@@ -276,7 +299,7 @@ RoomstylerRoomMethods->panoramas($params = ['limit' => 50, 'page' => 1]);
 * `$params` - Optional (Defaults do get set) - an array with the following keys:
   * `limit` - Optional (Default `50`) - A number between (and including) 1 and 50
   * `page` - Optional (Default `1`) - A number that defines the page you're on (useful for pagination)
-  * `since` - Optional (see `RoomstylerSearchMeta`) - Filters results within specified timeframe
+  * `since` - Optional ([see `RoomstylerSearchMeta`](#search_meta)) - Filters results within specified timeframe
   * `skip_total` - Optional - skips counting of panorama's, speeds up request slightly if `true`
 
 ### Actions
