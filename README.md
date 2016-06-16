@@ -198,7 +198,7 @@ RoomstylerRoomMethods->index($params = []);
 
 **Parameters**
 
-* `$params` - Optional (Defaults do get set) - an array with the following keys:
+* `$params` - Optional (Defaults do get set) - An array containing any the following keys:
   * `limit` - Optional (Default `50`) - A number between (and including) 1 and 50
   * `page` - Optional (Default `1`) - A number that defines the page you're on (useful for pagination)
   * `category` - Optional ([see `RoomstylerSearchMeta`](#search_meta)) - Filters results within specified category
@@ -268,7 +268,7 @@ RoomstylerRoomMethods->search($params = []);
 
 **Parameters**
 
-* `$params` - Optional (Defaults do get set) - an array with the following keys:
+* `$params` - Optional (Defaults do get set) - An array containing any the following keys:
   * `q` - Required - A search string
   * `limit` - Optional (Default `50`) - A number between (and including) 1 and 50
   * `page` - Optional (Default `1`) - A number that defines the page you're on (useful for pagination)
@@ -296,7 +296,7 @@ RoomstylerRoomMethods->panoramas($params = ['limit' => 50, 'page' => 1]);
 
 **Parameters**
 
-* `$params` - Optional (Defaults do get set) - an array with the following keys:
+* `$params` - Optional (Defaults do get set) - An array containing any the following keys:
   * `limit` - Optional (Default `50`) - A number between (and including) 1 and 50
   * `page` - Optional (Default `1`) - A number that defines the page you're on (useful for pagination)
   * `since` - Optional ([see `RoomstylerSearchMeta`](#search_meta)) - Filters results within specified timeframe
@@ -564,7 +564,7 @@ RoomstylerRoom->render($mode = '', $params = [])
 **Parameters**
 
 * `$mode` - Optional (should be nothing or `2d`) - Specify rendering method, if left empty it will render in 3D
-* `$params` - An array containing the following keys
+* `$params` - An array containing any the following keys:
   * `width` - Optional (Default value of `1920`) - Width at which to render room
   * `height` - Optional (Default value of `1080`) - Height at which to render room
   * `callback` - Optional (Required if `$mode` is `2d`) - A callback url that will receive a `POST` request when rendering is done
@@ -719,7 +719,7 @@ RoomstylerUser->loved_rooms($params = [])
 
 **Parameters**
 
-* `$params` - An array containing the following keys
+* `$params` - Optional (Defaults do get set) - An array containing any the following keys:
   * `page` - Optional - The page on which you're on (sets query offset to `(page - 1) * per_page`)
   * `per_page` - Optional - The amount of results to display on a page
   * `skip_total` - Optional (Default `true`) - skips counting results, speeds up query slightly
@@ -765,3 +765,86 @@ RoomstylerUser->collection($id)
 **Parameters**
 
 * `$id` - Required - which of the users' collections to fetch
+
+## Contests
+
+### Aggregation
+
+#### Fetch contests
+
+**PHP snippet**
+
+```php
+<?php
+print_r($api->contests->index());
+# => [RoomstylerContest{}, RoomstylerContest{}, ...]
+?>
+```
+
+**Method signature**
+
+```
+RoomstylerContestMethods->index($params = [])
+```
+
+**Parameters**
+
+* `$params` - Optional (Defaults do get set) - An array containing any the following keys:
+  * `per_page` - Optional (Default `25`) - A number between (and including) 1 and 50
+  * `page` - Optional (Default `1`) - A number that defines the page you're on (useful for pagination)
+  * `status` - Optional - Either `"finished"`, `"open"` or `"vote"`
+  * `title` - Optional - Return only contests where given string is contained within their `title`
+
+#### Fetch a contest
+
+**PHP snippet**
+
+```php
+<?php
+print_r($api->contests->find(1317));
+# => RoomstylerContest{}
+?>
+```
+
+**Method signature**
+
+```
+RoomstylerContestMethods->find($id)
+```
+
+**Parameters**
+
+* `$id` - Required - the `id` of the contest to fetch
+
+### Actions
+
+We initialize a `$contest` variable and use that in the following requests like so:
+
+```php
+<?php $contest = $rsapi->contests->find(1317); ?>
+```
+
+#### Fetch contest entries
+
+**PHP snippet**
+
+```php
+<?php
+print_r($contest->entries());
+# => [RoomstylerContestEntry{}, RoomstylerContestEntry{}, ...]
+?>
+```
+
+**Method signature**
+
+```
+RoomstylerContest->entries($params = [])
+```
+
+**Parameters**
+
+* `$params` - Optional (Defaults do get set) - An array containing any the following keys:
+  * `per_page` - Optional (Default `25`) - A number between (and including) 1 and 50
+  * `page` - Optional (Default `1`) - A number that defines the page you're on (useful for pagination)
+  * `order` - Optional - Attribute to order by and the direction to order by
+  * `rand_seed` - Optional - If supplied, entries will be returned psuedo-random based on the seed (must be an integer)
