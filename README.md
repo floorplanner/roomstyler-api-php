@@ -483,7 +483,7 @@ RoomstylerRoom->comment();
 
 * None
 
-#### Add (a) tag(s) to a room
+#### Add tags to a room
 
 **PHP snippet**
 
@@ -513,7 +513,7 @@ RoomstylerRoom->add_tags($tags)
 
 * `$tags` - Required - An array of individual tags or a string of comma-seperated tags
 
-#### Remove (a) tag(s) from a room
+#### Remove tags from a room
 
 **PHP snippet**
 
@@ -568,3 +568,155 @@ RoomstylerRoom->render($mode = '', $params = [])
   * `width` - Optional (Default value of `1920`) - Width at which to render room
   * `height` - Optional (Default value of `1080`) - Height at which to render room
   * `callback` - Optional (Required if `$mode` is `2d`) - A callback url that will receive a `POST` request when rendering is done
+
+## Users
+
+### Aggregation, Creation and Login
+
+#### Finding users
+
+**PHP snippet**
+
+```php
+<?php
+  print_r($api->users->find(972691));
+  # => RoomstylerUser{}
+?>
+```
+
+**OR**
+
+```php
+<?php
+  print_r($api->users->find([972691, 972691]));
+  # => [RoomstylerUser{}, RoomstylerUser{}, ...]
+?>
+```
+
+**OR**
+
+```php
+<?php
+  print_r($api->users->find('972691, 972691'));
+  # => [RoomstylerUser{}, RoomstylerUser{}, ...]
+?>
+```
+
+**Method signature**
+
+```
+RoomstylerUserMethods->find($ids)
+```
+
+**Parameters**
+
+* `$ids` - Required - The `id` of a user, an array of `id`s or a string of comma seperated `id`s
+
+
+#### Create a user
+
+**PHP snippet**
+
+```php
+<?php
+  print_r($api->users->create(['email' => 'my-email@provider.com', 'username' => 'myusername', 'password' => 'mypassword']));
+  # => RoomstylerUser{}
+?>
+```
+
+**Method signature**
+
+```
+RoomstylerUserMethods->create($params = [])
+```
+
+**Parameters**
+
+* `$params` - Required
+  * `email` - Required - Email we want to use for this account
+  * `username` - Required
+  * `password` - Required
+
+
+#### Login
+
+If you read over the user access setup section I showed an example of logging in as a user within the `constructor` of the object.
+It is however, also possible to login seperately like this, if You didn't login before and call this function manually later, all requests from then on will have
+user access.
+
+This function also returns the token needed to use in other requests such as to comment or love a room.
+
+Also, if you're already logged in you do not need to use this function this.
+
+**PHP snippet**
+
+```php
+<?php
+  print_r($api->users->login('my-email@provider.com', 'mypassword'));
+  # => RoomstylerUser{}
+?>
+```
+
+**Method signature**
+
+```
+RoomstylerUserMethods->login($email, $password)
+```
+
+**Parameters**
+
+* `$email` - Required - Email to use
+* `$password` - Required - Password for the account
+
+### Actions
+
+We initialize a `$user` variable and use that in the following requests like so:
+
+```php
+<?php $user = $rsapi->users->find(972691); ?>
+```
+
+#### Delete a user
+
+Deletes a given user
+
+**PHP snippet**
+
+```php
+<?php
+  print_r($user->delete());
+  # => RoomstylerUser{}
+?>
+```
+
+**Method signature**
+
+```
+RoomstylerUser->delete()
+```
+
+**Parameters**
+
+* None
+
+#### Get user loved rooms
+
+
+**PHP snippet**
+
+```php
+<?php
+  print_r($user->loved_rooms());
+  # => [RoomstylerRoom{}, RoomstylerRoom{}, ...]
+?>
+```
+
+**Method signature**
+
+```
+RoomstylerUser->loved_rooms($params = [])
+```
+
+**Parameters**
+
+* None

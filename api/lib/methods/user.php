@@ -11,8 +11,8 @@
       return (new RoomstylerRequest($this->_settings, $this->_whitelabeled))->send('RoomstylerUser', "users", ['user' => $params], RoomstylerRequest::POST, RoomstylerRequest::AUTH_API);
     }
 
-    public function login($username, $password) {
-      return (new RoomstylerRequest($this->_settings, $this->_whitelabeled))->send('RoomstylerUser', "users/login", ['email' => $username, 'password' => $password], RoomstylerRequest::POST);
+    public function login($email, $password) {
+      return (new RoomstylerRequest($this->_settings, $this->_whitelabeled))->send('RoomstylerUser', "users/login", ['email' => $email, 'password' => $password], RoomstylerRequest::POST);
     }
 
   }
