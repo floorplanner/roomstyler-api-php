@@ -14,43 +14,46 @@ This document is not yet finished, a lot of the documentation is still being wor
 * [Table of contents](#heading_toc)
 * [Installation](#heading_install)
 * [Getting started](#heading_getting_started)
-* [Rooms](#heading_rooms)
-  * [List](#fetch_rooms)
-  * [List whitelabel](#fetch_whitelabel_rooms)
-  * [Find](#find_specific_room)
-  * [Search](#searching_rooms)
-  * [Panorama's](#fetch_panoramas)
-  * [Comment](#comment_on_room)
-  * [Toggle love](#love_a_room)
-  * [Change owner](#change_room_owner)
-  * [Delete](#delete_room)
-  * [Products](#fetch_room_products)
-  * [Loves](#fetch_room_loves)
-  * [Related rooms](#fetch_related_rooms)
-  * [Comments](#fetch_room_comments)
-  * [Add tags](#add_room_tags)
-  * [Remove tags](#remove_room_tags)
-  * [Render](#render_room)
-* [Users](#heading_users)
-  * [Find](#finding_users)
-  * [Create](#create_a_user)
-  * [Login](#user_login)
-  * [Delete](#delete_a_user)
-  * [Loved rooms](#user_loved_rooms)
-  * [Collections](#user_collections)
-  * [Specific user collections](#user_specific_collection)
-* [Contests](#heading_contests)
-  * [List](#fetch_contests)
-  * [Find](#fetch_specific_contest)
-  * [Entries](#fetch_contest_entries)
-* [Contest Entries](#heading_contest_entries)
-  * [Vote](#vote_for_contest_entry)
-* [Materials](#heading_materials)
-  * [Find](#find_material)
-* [Components](#heading_components)
-  * [Find](#find_component)
-* [Categories](#heading_categories)
-  * [List](#fetch_categories)
+* [API endpoints](#api_endpoints)
+  * [Rooms](#heading_rooms)
+    * [List](#fetch_rooms)
+    * [List whitelabel](#fetch_whitelabel_rooms)
+    * [Find](#find_specific_room)
+    * [Search](#searching_rooms)
+    * [Panorama's](#fetch_panoramas)
+    * [Comment](#comment_on_room)
+    * [Toggle love](#love_a_room)
+    * [Change owner](#change_room_owner)
+    * [Delete](#delete_room)
+    * [Products](#fetch_room_products)
+    * [Loves](#fetch_room_loves)
+    * [Related rooms](#fetch_related_rooms)
+    * [Comments](#fetch_room_comments)
+    * [Add tags](#add_room_tags)
+    * [Remove tags](#remove_room_tags)
+    * [Render](#render_room)
+  * [Users](#heading_users)
+    * [Find](#finding_users)
+    * [Create](#create_a_user)
+    * [Login](#user_login)
+    * [Delete](#delete_a_user)
+    * [Loved rooms](#user_loved_rooms)
+    * [Collections](#user_collections)
+    * [Specific user collections](#user_specific_collection)
+  * [Contests](#heading_contests)
+    * [List](#fetch_contests)
+    * [Find](#fetch_specific_contest)
+    * [Entries](#fetch_contest_entries)
+  * [Contest Entries](#heading_contest_entries)
+    * [Vote](#vote_for_contest_entry)
+  * [Materials](#heading_materials)
+    * [Find](#find_material)
+  * [Components](#heading_components)
+    * [Find](#find_component)
+  * [Categories](#heading_categories)
+    * [List](#fetch_categories)
+* [3dplanner](#3dplanner)
+  * [Embed](#embed_3dplanner)
 
 ## <a name="heading_install"></a> Installation
 
@@ -197,11 +200,13 @@ We just talked about the `user` and `whitelabel` options that can be passed to t
 Everything is already setup to work with the API so you barely have to change these settings.
 The option you'll most likely be using is `debug` which allows you to take a peek into the request.
 
-## <a name="heading_rooms"></a> Rooms
+## <a name="api_endpoints"></a> API endpoints
 
-### Aggregation
+### <a name="heading_rooms"></a> Rooms
 
-#### <a name="search_meta"></a> Getting search meta data
+#### Aggregation
+
+##### <a name="search_meta"></a> Getting search meta data
 
 **PHP snippet**
 
@@ -222,7 +227,7 @@ RoomstylerRoomMethods->search_meta();
 
 * None
 
-#### <a name="fetch_rooms"></a> Fetching rooms
+##### <a name="fetch_rooms"></a> Fetching rooms
 
 **PHP snippet**
 
@@ -255,7 +260,7 @@ RoomstylerRoomMethods->index($params = []);
   * `whitelabel` - Optional - fetch rooms owned by your whitelabel (requires whitelabel access)
   * `tag` - Optional - Filter rooms by given tag
 
-#### <a name="fetch_whitelabel_rooms"></a> Fetching whitelabel rooms
+##### <a name="fetch_whitelabel_rooms"></a> Fetching whitelabel rooms
 
 **This method accepts the same parameters as the non-scoped `index` method! The only difference is that the optional `whitelabel` parameter is set to the whitelabel user for you**
 
@@ -271,7 +276,7 @@ RoomstylerRoomMethods->index($params = []);
 
 **Method signature and parameters: see [Fetching Rooms](#fetching_rooms)**
 
-#### <a name="find_specific_room"></a> Finding a specific room
+##### <a name="find_specific_room"></a> Finding a specific room
 
 **PHP snippet**
 
@@ -292,7 +297,7 @@ RoomstylerRoomMethods->find($id);
 
 * `$id` - The id of the room to fetch
 
-#### <a name="searching_rooms"></a> Searching rooms
+##### <a name="searching_rooms"></a> Searching rooms
 
 **PHP snippet**
 
@@ -320,7 +325,7 @@ RoomstylerRoomMethods->search($params = []);
   * `style` - Optional ([see `RoomstylerSearchMeta`](#search_meta)) - Filters results within specified style
   * `kind` - Optional - If it has the value of `own` it will search through the logged in users rooms (requires user access)
 
-#### <a name="fetch_panoramas"></a> Fetching panoramas
+##### <a name="fetch_panoramas"></a> Fetching panoramas
 
 **PHP snippet**
 
@@ -353,7 +358,7 @@ Lets say Let's initialize a `$room` variable and use that in the following reque
 <?php $room = $rsapi->rooms->find(123456); ?>
 ```
 
-#### <a name="comment_on_room"></a> Comment on a room
+##### <a name="comment_on_room"></a> Comment on a room
 
 **PHP snippet**
 
@@ -375,7 +380,7 @@ RoomstylerRoom->comment($content);
 
 * `$content` - The comment text to be placed on the room
 
-#### <a name="love_a_room"></a> Toggle love on a room
+##### <a name="love_a_room"></a> Toggle love on a room
 
 **PHP snippet**
 
@@ -397,7 +402,7 @@ RoomstylerRoom->toggle_love();
 
 * None
 
-#### <a name="change_room_owner"></a> Change owner of a room
+##### <a name="change_room_owner"></a> Change owner of a room
 
 **PHP snippet**
 
@@ -419,7 +424,7 @@ RoomstylerRoom->chown($user_id);
 
 * `$user_id` - The target user that will be the new owner of the subject room (should be a user(id) of your whitelabel)
 
-#### <a name="delete_room"></a> Delete a room
+##### <a name="delete_room"></a> Delete a room
 
 **PHP snippet**
 ```php
@@ -442,7 +447,7 @@ RoomstylerRoom->delete();
 
 * None
 
-#### <a name="fetch_room_products"></a> Fetch products used in the room
+##### <a name="fetch_room_products"></a> Fetch products used in the room
 
 **PHP snippet**
 
@@ -463,7 +468,7 @@ RoomstylerRoom->products();
 
 * None
 
-#### <a name="fetch_room_loves"></a> Fetch users loves of the room
+##### <a name="fetch_room_loves"></a> Fetch users loves of the room
 
 **PHP snippet**
 
@@ -484,7 +489,7 @@ RoomstylerRoom->loved_by();
 
 * None
 
-#### <a name="fetch_related_rooms"></a> Fetch related rooms of a room
+##### <a name="fetch_related_rooms"></a> Fetch related rooms of a room
 
 **PHP snippet**
 
@@ -505,7 +510,7 @@ RoomstylerRoom->related_rooms();
 
 * None
 
-#### <a name="fetch_room_comments"></a> Fetch comments on a room
+##### <a name="fetch_room_comments"></a> Fetch comments on a room
 
 **PHP snippet**
 
@@ -526,7 +531,7 @@ RoomstylerRoom->comment();
 
 * None
 
-#### <a name="add_room_tags"></a> Add tags to a room
+##### <a name="add_room_tags"></a> Add tags to a room
 
 **PHP snippet**
 
@@ -556,7 +561,7 @@ RoomstylerRoom->add_tags($tags)
 
 * `$tags` - Required - An array of individual tags or a string of comma-seperated tags
 
-#### <a name="remove_room_tags"></a> Remove tags from a room
+##### <a name="remove_room_tags"></a> Remove tags from a room
 
 **PHP snippet**
 
@@ -587,7 +592,7 @@ RoomstylerRoom->remove_tags($tags)
 * `$tags` - Required - An array of individual tags or a string of comma-seperated tags
 
 
-#### <a name="render_room"></a> Render room in 2D/3D
+##### <a name="render_room"></a> Render room in 2D/3D
 
 **PHP snippet**
 
@@ -612,11 +617,11 @@ RoomstylerRoom->render($mode = '', $params = [])
   * `height` - Optional (Default value of `1080`) - Height at which to render room
   * `callback` - Optional (Required if `$mode` is `2d`) - A callback url that will receive a `POST` request when rendering is done
 
-## <a name="heading_users"></a> Users
+### <a name="heading_users"></a> Users
 
-### Aggregation, Creation and Login
+#### Aggregation, Creation and Login
 
-#### <a name="finding_users"></a> Finding users
+##### <a name="finding_users"></a> Finding users
 
 **PHP snippet**
 
@@ -656,7 +661,7 @@ RoomstylerUserMethods->find($ids)
 * `$ids` - Required - The `id` of a user, an array of `id`s or a string of comma seperated `id`s
 
 
-#### <a name="create_a_user"></a> Create a user
+##### <a name="create_a_user"></a> Create a user
 
 **PHP snippet**
 
@@ -681,7 +686,7 @@ RoomstylerUserMethods->create($params = [])
   * `password` - Required
 
 
-#### <a name="user_login"></a> Login
+##### <a name="user_login"></a> Login
 
 If you read over the user access setup section I showed an example of logging in as a user within the `constructor` of the object.
 It is however, also possible to login seperately like this, if You didn't login before and call this function manually later, all requests from then on will have
@@ -719,7 +724,7 @@ Let's initialize a `$user` variable and use that in the following requests like 
 <?php $user = $rsapi->users->find(972691); ?>
 ```
 
-#### <a name="delete_a_user"></a> Delete a user
+##### <a name="delete_a_user"></a> Delete a user
 
 Deletes a given user
 
@@ -742,7 +747,7 @@ RoomstylerUser->delete()
 
 * None
 
-#### <a name="user_loved_rooms"></a> Get user loved rooms
+##### <a name="user_loved_rooms"></a> Get user loved rooms
 
 
 **PHP snippet**
@@ -767,7 +772,7 @@ RoomstylerUser->loved_rooms($params = [])
   * `per_page` - Optional - The amount of results to display on a page
   * `skip_total` - Optional (Default `true`) - skips counting results, speeds up query slightly
 
-#### <a name="user_collections"></a> Get user collections
+##### <a name="user_collections"></a> Get user collections
 
 **PHP snippet**
 
@@ -788,7 +793,7 @@ RoomstylerUser->collections()
 
 * None
 
-#### <a name="user_specific_collection"></a> Get specific user collection
+##### <a name="user_specific_collection"></a> Get specific user collection
 
 **PHP snippet**
 
@@ -809,11 +814,11 @@ RoomstylerUser->collection($id)
 
 * `$id` - Required - which of the users' collections to fetch
 
-## <a name="heading_contests"></a> Contests
+### <a name="heading_contests"></a> Contests
 
-### Aggregation
+#### Aggregation
 
-#### <a name="fetch_contests"></a> Fetch contests
+##### <a name="fetch_contests"></a> Fetch contests
 
 **PHP snippet**
 
@@ -838,7 +843,7 @@ RoomstylerContestMethods->index($params = [])
   * `status` - Optional - Either `"finished"`, `"open"` or `"vote"`
   * `title` - Optional - Return only contests where given string is contained within their `title`
 
-#### <a name="fetch_specific_contest"></a> Fetch a contest
+##### <a name="fetch_specific_contest"></a> Fetch a contest
 
 **PHP snippet**
 
@@ -867,7 +872,7 @@ Let's initialize a `$contest` variable and use that in the following requests li
 <?php $contest = $rsapi->contests->find(1317); ?>
 ```
 
-#### <a name="fetch_contest_entries"></a> Fetch contest entries
+##### <a name="fetch_contest_entries"></a> Fetch contest entries
 
 **PHP snippet**
 
@@ -892,7 +897,7 @@ RoomstylerContest->entries($params = [])
   * `order` - Optional - Attribute to order by and the direction to order by
   * `rand_seed` - Optional - If supplied, entries will be returned psuedo-random based on the seed (must be an integer)
 
-## <a name="heading_contest_entries"></a> Contest entries
+### <a name="heading_contest_entries"></a> Contest entries
 
 ### Actions
 
@@ -902,7 +907,7 @@ Let's initialize a `$contest_entry` variable and use that in the following reque
 <?php $contest_entry = $rsapi->contests->find(1317)->entries()[0]; ?>
 ```
 
-#### <a name="vote_for_contest_entry"></a> Vote for a contest entry
+##### <a name="vote_for_contest_entry"></a> Vote for a contest entry
 
 **PHP snippet**
 
@@ -924,11 +929,11 @@ RoomstylerContestEntry->vote()
 
 * None
 
-## <a name="heading_material"></a> Material
+### <a name="heading_material"></a> Material
 
-### Aggregation
+#### Aggregation
 
-#### <a name="find_material"></a> Find a material item
+##### <a name="find_material"></a> Find a material item
 
 **PHP snippet**
 
@@ -949,11 +954,11 @@ RoomstylerMaterialMethods->find($id)
 
 * `$id` - Required - the `id` of the material item to fetch
 
-## <a name="heading_components"></a> Component
+### <a name="heading_components"></a> Component
 
-### Aggregation
+#### Aggregation
 
-#### <a name="find_component"></a> Find a component item
+##### <a name="find_component"></a> Find a component item
 
 **PHP snippet**
 
@@ -974,11 +979,11 @@ RoomstylerComponentMethods->find($id)
 
 * `$id` - Required - the `id` of the component item to fetch
 
-## <a name="heading_categories"></a> Categories
+### <a name="heading_categories"></a> Categories
 
-### Aggregation
+#### Aggregation
 
-#### <a name="fetch_categories"></a> Fetching categories
+##### <a name="fetch_categories"></a> Fetching categories
 
 **PHP snippet**
 
@@ -998,3 +1003,34 @@ RoomstylerCategoryMethods->index()
 **Parameters**
 
 * None
+
+## <a name="3dplanner"></a> 3dplanner
+
+### <a name="embed_3dplanner"></a> Embedding the 3dplanner
+
+**PHP snippet**
+
+```php
+<?php
+print_r($api->editor->embed());
+# => <iframe...>
+?>
+```
+
+**Method signature**
+
+```
+RoomstylerEditor->embed($opts = [], $html_opts = [])
+```
+
+**Parameters**
+
+* `$opts` - Optional (Defaults do get set) - An array containing any the following keys:
+  * `room_url` - Optional - Opens a `room_url` (returned from the `RoomstylerRoom->url` property)
+  * `token` - Optional - Log in a user through a token
+  * `language` - Optional - Set the language for the editor to use, `en`, `es`, `nl`, `fr` and `de`
+  * `login` - Optional - if false, prevents all logins
+* `$html_opts` - Optional (Defaults do get set) - An array consisting of valid html attribute => value pairs
+  * `frameborder` - Optional (Default `0`) - HTML prop to hide the border around the editor
+  * `width` - Optional (Default `1024`) - Width of the editor iframe
+  * `height` - Optional (Default `768`) - Height of the editor iframe

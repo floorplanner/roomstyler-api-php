@@ -15,14 +15,16 @@
       $html_attrs = [];
       $src_options = [];
       $html_opts = array_merge($this->html_opts, $html_opts);
+      $login_allowed = (isset($opts['login']) ? ($opts['login'] == true) : true);
 
       foreach ($html_opts as $attr => $val) $html_attrs[] = "$attr=\"$val\"";
 
       $attrs = join(' ', $html_attrs);
 
       #logs in with token if supplied, otherwise it tries to login with api user token if it's set
-      if (isset($opts['token'])) $src_options['token'] = $opts['token'];
-      else if (isset($opts['login']) && $opts['login'] == true && $this->_settings['token'] != NULL) $src_options['token'] = $this->_settings['token'];
+      if ($login_allowed)
+        if (isset($opts['token'])) $src_options['token'] = $opts['token'];
+        else if (isset($this->_settings['token'])) $src_options['token'] = $this->_settings['token'];
 
       # sets language if set, defaults to api default language
       if (isset($opts['language'])) $src_options['language'] = $opts['language'];
