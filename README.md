@@ -14,6 +14,10 @@ This document is not yet finished, a lot of the documentation is still being wor
 * [Table of contents](#heading_toc)
 * [Installation](#heading_install)
 * [Getting started](#heading_getting_started)
+* [Structure](#heading_structure)
+  * [RoomstylerApi](#structure_object_roomstyler_api)
+  * [RoomstylerMethodBase](#structure_object_roomstyler_method_base)
+  * [RoomstylerModelBase](#structure_object_roomstyler_model_base)
 * [API endpoints](#api_endpoints)
   * [Rooms](#heading_rooms)
     * [List](#fetch_rooms)
@@ -159,7 +163,7 @@ After doing this setup you should probably run a simple test to check if you can
 ?>
 ```
 
-#### More configuration options
+#### <a name="heading_config_options"></a> More configuration options
 
 We just talked about the `user` and `whitelabel` options that can be passed to the constructor of the `RoomstylerApi` class but there are more options:
 
@@ -199,6 +203,140 @@ We just talked about the `user` and `whitelabel` options that can be passed to t
 
 Everything is already setup to work with the API so you barely have to change these settings.
 The option you'll most likely be using is `debug` which allows you to take a peek into the request.
+
+## <a name="heading_structure"></a> Structure
+
+This is a general overview of the structure of the core objects behind the API, I will try to explain what you can do and when you can do it as best as I can.
+The API is OOP only, which means you're going to have to apply a little bit of PHP's OOP but don't worry, it'll be easy!
+
+### <a name="structure_object_roomstyler_api"> RoomstylerApi
+
+Starting with the `RoomstylerApi` class, this is the base for the entire API.
+It contains the settings and defaults that we've already discussed [here](#heading_config_options)
+
+It also handles calls like this that you will be using:
+
+```php
+#call to a new instance of "RoomstylerRoomMethods"
+$api->rooms;
+
+#call to a new instance of "RoomstylerComponentMethods"
+$api->components;
+```
+
+If you're someone who has done OOP for some time and are familiar with [PHP's magic methods](http://php.net/manual/en/language.oop5.magic.php)
+and more specifically [the `__get` magic method](http://php.net/manual/en/language.oop5.overloading.php#object.get) you'll know exactly what I'm talking about.
+
+When you call something like `->components` on the `$api` (Could be any variable name, must be an instance of the `RoomstylerApi` class)
+the `$api` will look up a class with the name of `RoomstylerComponentMethods`.
+
+It does this by first converting whatever property you're trying to call to its singular form so `components` becomes `component`, then converting the first character to uppercase so `component` becomes `Component`
+and last but not least it *prepends* `Roomstyler` and *appends* `Methods` so that the final result becomes `RoomstylerComponentMethods`.
+
+If you're already using the singular form of a word, e.g. `component` then the step to convert will do nothing and it will still uppercase the first character and *prepend* `Roomstyler` and *append* `Methods`
+
+This `RoomstylerComponentMethods` class extends `RoomstylerMethodBase` and allows you to call the [documented component aggregation methods](#heading_components).
+
+Essentially this means that you can call any property and get either an instance of a class back if it exists and is included, or a `Fatal Error: Class 'Roomstyler[NonExistentClass]Methods' not found in...`.
+
+### <a name="structure_object_roomstyler_method_base"> RoomstylerMethodBase
+
+This is the base class behind the scenes that allows you to use any and all of the `RoomstylerApi->_settings` within an instance of `Roomstyler[...]Methods`
+It's purpose is to provide a standard interface for actions you execute to **get** a dataset.
+
+### <a name="structure_object_roomstyler_model_base"> RoomstylerModelBase
+
+This is the base class behind the returned results from the requests. You use the methods in `Roomstyler[...]Methods` to get a set of results (through some `find()`, `index()` or `search()` action)
+after which you get a single object or an array of objects back which you can then manipulate.
+
+#### <a name="structure_object_roomstyler_model_base_properties"> Properties
+
+This base class is actually more useful than the `RoomstylerMethodBase` since this one does the same and more, it also dynamically populates itself with properties returned from the API.
+
+To get an idea of what I'm talking about, consider this `json` response from `api/users/972691` it should look something like this:
+
+```json  
+{
+  "id": 972691,
+  "username": "Sidney Liebrand",
+  "role": "admin",
+  "bio": "I'm a 21 year old web developer from the Netherlands, born, raised and still living in the always magnificent Dinteloord.",
+  "avatar": "https://d2sdvaauesfb7j.cloudfront.net/avatars/972691-1434979777.jpg",
+  "background": "https://d2sdvaauesfb7j.cloudfront.net/img/empty.jpeg"
+}
+```
+
+And compare it to the return object that would look like this after a successful request and being `__construct`ed
+
+```php
+<?php
+$api = new RoomstylerApi(['user' => $CONFIG['user_credentials']]);
+$user = $api->user->find(972691);
+
+echo '<pre>';
+print_r($user);
+# =>
+
+RoomstylerUser Object
+(
+    [_fields_set:RoomstylerModelBase:private] => 1
+    [_errors:RoomstylerModelBase:private] => Array
+        (
+        )
+
+    [_http_status:RoomstylerModelBase:private] => 200
+    [_settings:protected] => Array
+        (
+            [protocol] => https
+            [whitelabel] => Array
+                (
+                )
+
+            [user] => Array
+                (
+                    [name] => mysignin@email.com
+                    [password] => mysignin_password
+                )
+
+            [host] => roomstyler.com
+            [prefix] => api
+            [token] => 64f97c9ee52df2735fsample-tokene6e252d58837d41b05cd
+            [timeout] => 5
+            [language] => en
+            [connect_timeout] => 30
+            [request_headers] => Array
+                (
+                    [0] => Content-Type: application/json; charset=utf-8
+                )
+
+            [debug] =>
+            [user_agent] => RoomstylerApi/1.0 Type/normal (https://roomstyler.com)
+        )
+
+    [_whitelabeled:protected] =>
+    [id] => 972691
+    [username] => Sidney Liebrand
+    [role] => admin
+    [bio] => I'm a 21 year old web developer from the Netherlands, born, raised and still living in the always magnificent Dinteloord.
+    [avatar] => https://d2sdvaauesfb7j.cloudfront.net/avatars/972691-1434979777.jpg
+    [background] => https://d2sdvaauesfb7j.cloudfront.net/img/empty.jpeg
+)
+?>
+```
+
+Now all the properties that start with an underscore (`_`) are also `:protected` which means we can't even access them.
+If you try accessing this freshly fetched users `_whitelabel` property `$user->_whitelabel` it would simply return `Notice:  Undefined property: RoomstylerUser::$_whitelabel`
+
+If you tried to access the public (and dynamically populated) `id` on the other hand, you would get either `NULL` or it's value if it's set.
+The same goes for all other properties. Normally you would get a notice if you call a property that does not exist on an object (`$user->non_existent_prop`): `Notice:  Undefined property: RoomstylerUser::$non_existent_prop` but since the fields are *subject to change* this would mean that you could get random `Notice` errors for no reason.
+
+Because of this, all properties that do not exist or aren't public will return `NULL`.
+
+#### <a name="structure_object_roomstyler_model_base_methods"> Methods
+
+The `RoomstylerModelBase` class also provides us with some other methods we can use to see wether a request was `successful()`, the object actually `exists()` (not just an empty object - but actually having properties), or if the object in question has any `errors()`
+
+This is done (using our `$user` initiated on top) by calling `$user->errors()` for any json rendered errors, `$user->successful()` to check wether the request returned with a http status of less than `400` and no json errors or `$user->exists()` to check if any property is set at all.
 
 ## <a name="api_endpoints"></a> API endpoints
 

@@ -12,9 +12,8 @@
     }
   }
 
-  # remove this line if you don't need to do any writing to the API
+  # change details in this file and store it in a safe place.
   require 'config.example.php';
-  require 'index.php';
 
   $api = new RoomstylerApi(['whitelabel' => $CONFIG['whitelabel_credentials'], 'user' => $CONFIG['user_credentials']]);
 
