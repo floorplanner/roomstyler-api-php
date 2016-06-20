@@ -2,6 +2,16 @@
 
   class RoomstylerModelBase extends RoomstylerBase {
 
+    private $http_status_descriptions = [
+      '200' => 'OK',
+      '201' => 'Created',
+      '302' => 'Found',
+      '403' => 'Forbidden',
+      '404' => 'Not found',
+      '422' => 'Unprocessable entity',
+      '500' => 'Internal server error'
+    ];
+
     private $_fields_set = false;
     private $_errors = [];
     private $_http_status = 0;
@@ -12,7 +22,7 @@
     public $id = NULL;
 
     public function __construct($row, $settings, $whitelabeled, $errors = [], $status = 0, $parent_attrs = false) {
-      $this->_errors = $errors;
+      $this->_errors = new RoomstylerError(is_array($errors) ? $errors : []);
       $this->_http_status = $status;
       $this->_settings = $settings;
       $this->_whitelabeled = $whitelabeled;
@@ -38,7 +48,7 @@
     }
 
     public function successful() {
-      return $this->_http_status < 400 && empty($this->_errors);
+      return $this->_http_status < 300 && empty($this->_errors);
     }
 
     public function errors() {

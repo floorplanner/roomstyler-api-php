@@ -13,9 +13,19 @@
   }
 
   # change details in this file and store it in a safe place.
-  require 'config.example.php';
+  require 'config.php';
+  require 'api/rs_api.php';
 
   $api = new RoomstylerApi(['whitelabel' => $CONFIG['whitelabel_credentials'], 'user' => $CONFIG['user_credentials']]);
+
+  $errors = new RoomstylerError(['test', 'user' => ['email' => ['no @ symbol found', 'some other error'], 'password' => 'too short']]);
+
+  $errors->each(function($msg, $labels) {
+    echo '<hr />';
+    if (!empty($labels)){ echo join(' > ', $labels);
+    echo '<br />';}
+    echo $msg;
+  });
 
   ################################################################################
   #                                                                              #
