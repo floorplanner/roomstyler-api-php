@@ -12,6 +12,10 @@
       return !empty($this->_errors);
     }
 
+    public function get() {
+      return $this->_errors;
+    }
+
     public function each($callback) {
       return $this->_each($callback, $this->_errors);
     }

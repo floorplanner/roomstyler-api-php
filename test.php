@@ -18,7 +18,9 @@
 
   $api = new RoomstylerApi(['whitelabel' => $CONFIG['whitelabel_credentials'], 'user' => $CONFIG['user_credentials']]);
 
-  $errors = new RoomstylerError(['test', 'user' => ['email' => ['no @ symbol found', 'some other error'], 'password' => 'too short']]);
+  $errors = new RoomstylerError(['test', 'user' => ['email' => ['no @ symbol found', 'some other error'], 'password' => 'too short'], 'usera' => ['email' => ['no @ symbol found', 'some other error'], 'password' => 'too short'], 'test error 4', 'labeled_error' => 'test']);
+
+  pp($errors->get());
 
   $errors->each(function($msg, $labels) {
     echo '<hr />';
