@@ -48,7 +48,6 @@
     }
 
     public function headers($type = 'request') {
-      if ($type != 'request' || $type != 'response') $type = 'request';
       return $this->headers[$type];
     }
 

@@ -141,7 +141,7 @@
       $status = $res['status'];
       if (isset($res['errors']) && !is_array($res['errors'])) $errors = $res['errors'];
       $errors = $res['errors'];
-      if (isset($res['error'])) array_merge($errors, ['single_error' => $res['error']]);
+      if (isset($res['error'])) array_push($errors, $res['error']);
       $res = $res['body'];
 
       # some results have a singular name root node, others may have a plural root node
