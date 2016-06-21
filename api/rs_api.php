@@ -1,7 +1,7 @@
 <?php
   require_once 'lib/roomstyler_base.php';
-  require_once 'lib/roomstyler_error.php';
 
+  require_once 'lib/http/roomstyler_error.php';
   require_once 'lib/http/roomstyler_response.php';
   require_once 'lib/http/roomstyler_request.php';
 

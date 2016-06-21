@@ -2,7 +2,6 @@
 
   class RoomstylerModelBase extends RoomstylerBase {
 
-    private $_custom_http_errors = [];
     private $_fields_set = false;
     private $_http_status = 0;
     private $_accessible_props = ['errors'];
@@ -14,10 +13,8 @@
 
     public $id;
 
-    public function __construct($row, $settings, $whitelabeled, $errors = [], $status = 0, $parent_attrs = false) {
-      $this->errors = new RoomstylerError((is_array($errors) ? $errors : []),
-                                           ['http_status' => $status,
-                                            'custom_http_errors_for' => get_class($this)]);
+    public function __construct($row, $settings, $whitelabeled, RoomstylerError $errors, $status = 0, $parent_attrs = false) {
+      $this->errors = $errors;
       $this->_http_status = $status;
       $this->_settings = $settings;
       $this->_whitelabeled = $whitelabeled;

@@ -10,10 +10,7 @@
         403 => 'Forbidden',
         404 => 'Not found',
         422 => 'Unprocessable entity',
-        500 => 'Internal server error'],
-      'user' => [
-        404 => 'specific error'
-      ]
+        500 => 'Internal server error']
     ];
 
     private $_errors = [];

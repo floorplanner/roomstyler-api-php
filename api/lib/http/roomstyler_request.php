@@ -144,6 +144,11 @@
       if (isset($res['error'])) array_push($errors, $res['error']);
       $res = $res['body'];
 
+      # wrap errors in RoomstylerError object, if an array is returned, we don't want
+      # to create a new instance with the same errors.
+      $errors = new RoomstylerError($errors, ['http_status' => $status,
+                                              'custom_http_errors_for' => $singular_type]);
+
       # some results have a singular name root node, others may have a plural root node
       # this is another attempt to make the returned results consistent
       if (is_object($res))
