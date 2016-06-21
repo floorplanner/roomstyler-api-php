@@ -18,6 +18,11 @@ This document is not yet finished, a lot of the documentation is still being wor
   * [RoomstylerApi](#structure_object_roomstyler_api)
   * [RoomstylerMethodBase](#structure_object_roomstyler_method_base)
   * [RoomstylerModelBase](#structure_object_roomstyler_model_base)
+* [Errors](#errors)
+  * [RoomstylerError](#roomstyler_error)
+    * [`any()`](#roomstyler_error_any)
+    * [`get()`](#roomstyler_error_get)
+    * [`each()`](#roomstyler_error_each)
 * [API endpoints](#api_endpoints)
   * [Rooms](#heading_rooms)
     * [List](#fetch_rooms)
@@ -337,6 +342,113 @@ Because of this, all properties that do not exist or aren't public will return `
 The `RoomstylerModelBase` class also provides us with some other methods we can use to see wether a request was `successful()`, the object actually `exists()` (not just an empty object - but actually having properties), or if the object in question has any `errors()`
 
 This is done (using our `$user` initiated on top) by calling `$user->errors()` for any json rendered errors, `$user->successful()` to check wether the request returned with a http status of less than `400` and no json errors or `$user->exists()` to check if any property is set at all.
+
+## <a name="errors"></a> Errors
+
+Every object returned from the API will have an accessible `errors` property that has a few methods.
+To check wether any of the objects contains any error (including http errors)
+
+the maximum limit of the index call is 50.
+if this is exceeded the server will return a JSON error and an Unprocessable Entity (422) http error
+
+```php
+$response = $rsapi->rooms->index(['limit' => 100]);
+
+# full response
+# since the API call errored, a single object is returned instead of an array of objects.
+print_r($response);
+
+# if this didn't happen, you'd have to call
+print_r($response[0]);
+
+# to see the errors (which are always bound to every returned object)
+```
+
+To access these errors, call the `errors` property on a single entity.
+It will return an instance of the [`RoomstylerError`](#roomstyler_error) class.
+
+```php
+$response->errors
+# => RoomstylerError{}
+```
+
+### <a name="roomstyler_error"></a> RoomstylerError
+
+The `RoomstylerError` class has three methods, one to [`get()`](#roomstyler_error_get) all the errors.
+One to see if there are [`any()`](#roomstyler_error_any) errors and a function that loops through [`each()`](#roomstyler_error_each) error.
+
+They will be explained using this example request.
+
+(This request will error out since the max. limit for the `index()` function is `50`)
+
+```php
+$response = $rsapi->rooms->index(['limit' => 100]);
+```
+
+#### <a name="roomstyler_error_any"></a> Check if there are errors
+
+The [`any()`](#roomstyler_error_any) function will return `true` if any errors including any http errors occured.
+
+```php
+$response->errors->any();
+# => true
+```
+
+#### <a name="roomstyler_error_get"></a> Get all errors
+
+The [`get()`](#roomstyler_error_get) function will return an array of errors including http errors.
+If there are no errors, an empty array is returned.
+
+The array returned is associative and will contain numeric and string keys.
+As you might be able to see below, the errors have different depths making it hard to property loop the errors.
+The solution for this is the builtin [`each()`](#roomstyler_error_each) method which is explained later.
+
+```php
+$response->errors->get();
+# => [0 => 'Some error', 'assoc' => 'too', 'user' => ['nested' => ['errors', 'for a single entity']]]
+```
+
+#### <a name="roomstyler_error_each"></a> Loop all the errors
+
+If there are errors, you can loop these through the [`each()`](#roomstyler_error_each) function.
+It takes one parameter, which is a closure or callable function that itself takes one (optionally two) parameter(s)
+The first parameter contains the *error message* of an error and the second parameter will contain it's parent keys if it was a nested hash.
+
+As we know the above `$response` example gives us two errors, one through a nested *json* object with an `error` key which contains the error. And a http error since we're requesting too much data.
+
+If we'd print the [`get()`](#roomstyler_error_get) function with this example, the errors array would look like this:
+
+```php
+# => [
+  'error' => 'Limit should be between 1 and 50',
+  0 => 'Unprocessable entity'
+]
+```
+
+Knowing the structure of the errors, if we build something like this:
+
+```php
+$response->errors->each(function($error, $labels) {
+  if ($labels) $label = join('.', $labels);
+  else $label = 'default_label';
+
+  print_r($label": $error");
+});
+```
+
+The output will look like this:
+
+```
+error: Limit should be between 1 and 50
+default_label: Limit should be between 1 and 50
+```
+
+If the `error` key wasn't an error but instead another hash with say a `quantity` key containing the same error, the output for the same request would look like:
+
+```
+error.quantity: Limit should be between 1 and 50
+default_label: Limit should be between 1 and 50
+```
 
 ## <a name="api_endpoints"></a> API endpoints
 

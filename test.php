@@ -18,7 +18,6 @@
   require 'api/rs_api.php';
 
   $api = new RoomstylerApi(['whitelabel' => $CONFIG['whitelabel_credentials'], 'user' => $CONFIG['user_credentials']]);
-  pp($api->user->errors->get());
 
   ################################################################################
   #                                                                              #
