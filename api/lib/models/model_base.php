@@ -11,8 +11,6 @@
     protected $_settings = [];
     protected $_whitelabeled = false;
 
-    public $id;
-
     public function __construct($row, $settings, $whitelabeled, RoomstylerError $errors, $status = 0, $parent_attrs = false) {
       $this->errors = $errors;
       $this->_http_status = $status;

@@ -285,11 +285,13 @@ print_r($user);
 RoomstylerUser Object
 (
     [_fields_set:RoomstylerModelBase:private] => 1
-    [_errors:RoomstylerModelBase:private] => Array
+    [_http_status:RoomstylerModelBase:private] => 200
+    [_accessible_props:RoomstylerModelBase:private] => ['errors']
+
+    [errors:RoomstylerModelBase:private] => RoomstylerError Object
         (
         )
 
-    [_http_status:RoomstylerModelBase:private] => 200
     [_settings:protected] => Array
         (
             [protocol] => https
@@ -335,7 +337,7 @@ If you try accessing this freshly fetched users `_whitelabel` property `$user->_
 If you tried to access the public (and dynamically populated) `id` on the other hand, you would get either `NULL` or it's value if it's set.
 The same goes for all other properties. Normally you would get a notice if you call a property that does not exist on an object (`$user->non_existent_prop`): `Notice:  Undefined property: RoomstylerUser::$non_existent_prop` but since the fields are *subject to change* this would mean that you could get random `Notice` errors for no reason.
 
-Because of this, all properties that do not exist or aren't public will return `NULL`.
+Because of this, all properties that do not exist or aren't public (except `errors` which is made public through `__get`) will return `NULL`.
 
 #### <a name="structure_object_roomstyler_model_base_methods"> Methods
 
