@@ -151,7 +151,7 @@
         else if (property_exists($res, $singular_type)) $res = $res->$singular_type;
 
       # SearchMeta request is different since it fetches multiple nested resources
-      # therefore we wrap the nested resources within the class instead of here
+      # therefore we wrap the nested resources within the class instead
       if ($singular_type == 'searchmeta') return new RoomstylerSearchMeta($res, $errors, $status);
 
       # if result is an array then we want to return an array of wrapped objects

@@ -2,10 +2,30 @@
 
   class RoomstylerError {
 
+    private static $http_errors = [
+      'default' => [
+        200 => 'OK',
+        201 => 'Created',
+        302 => 'Found',
+        403 => 'Forbidden',
+        404 => 'Not found',
+        422 => 'Unprocessable entity',
+        500 => 'Internal server error'],
+      'user' => [
+        404 => 'specific error'
+      ]
+    ];
+
     private $_errors = [];
 
     public function __construct(array $errors, array $opts = []) {
       $this->_errors = $errors;
+      if (isset($opts['http_status']) && isset($opts['custom_http_errors_for'])) {
+        $type = strtolower(str_replace('Roomstyler', '', $opts['custom_http_errors_for']));
+        if (!array_key_exists($opts['http_status'], self::$http_errors[$type]))
+          $type = 'default';
+        $this->_errors[] = self::$http_errors[$type][$opts['http_status']];
+      }
     }
 
     public function any() {

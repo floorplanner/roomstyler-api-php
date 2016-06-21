@@ -2,16 +2,7 @@
 
   class RoomstylerModelBase extends RoomstylerBase {
 
-    private $http_status_descriptions = [
-      '200' => 'OK',
-      '201' => 'Created',
-      '302' => 'Found',
-      '403' => 'Forbidden',
-      '404' => 'Not found',
-      '422' => 'Unprocessable entity',
-      '500' => 'Internal server error'
-    ];
-
+    private $_custom_http_errors = [];
     private $_fields_set = false;
     private $_errors = [];
     private $_http_status = 0;
@@ -22,7 +13,9 @@
     public $id = NULL;
 
     public function __construct($row, $settings, $whitelabeled, $errors = [], $status = 0, $parent_attrs = false) {
-      $this->_errors = new RoomstylerError(is_array($errors) ? $errors : []);
+      $this->_errors = new RoomstylerError((is_array($errors) ? $errors : []),
+                                           ['http_status' => $status,
+                                            'custom_http_errors_for' => get_class($this)]);
       $this->_http_status = $status;
       $this->_settings = $settings;
       $this->_whitelabeled = $whitelabeled;
