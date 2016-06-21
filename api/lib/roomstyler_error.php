@@ -24,7 +24,7 @@
         $type = strtolower(str_replace('Roomstyler', '', $opts['custom_http_errors_for']));
         if (!array_key_exists($opts['http_status'], self::$http_errors[$type]))
           $type = 'default';
-        $this->_errors[] = self::$http_errors[$type][$opts['http_status']];
+        array_push($this->_errors, self::$http_errors[$type][$opts['http_status']]);
       }
     }
 
@@ -41,15 +41,14 @@
     }
 
     private function _each($callback, $error_list, array $parent_labels = []) {
-      foreach ($error_list as $label => $error)
-        if (is_array($error)) {
-          if (!is_numeric($label)) array_push($parent_labels, $label);
-          $this->_each($callback, $error, $parent_labels);
-          if (!is_numeric($label)) array_splice($parent_labels, -1, 1);
-        } else {
-          if (!is_numeric($label)) array_push($parent_labels, $label);
-          call_user_func($callback, $error, $parent_labels);
-        }
+      foreach ($error_list as $label => $error) {
+        if (!is_numeric($label)) array_push($parent_labels, $label);
+
+        if (is_array($error)) $this->_each($callback, $error, $parent_labels);
+        else call_user_func($callback, $error, $parent_labels);
+
+        if (!is_numeric($label)) array_splice($parent_labels, -1, 1);
+      }
     }
 
   }

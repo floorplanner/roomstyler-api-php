@@ -65,7 +65,6 @@
 
     public function login($name, $password) {
       $response = $this->users->login($name, $password);
-      pp($response);
 
       if ($this->_settings['debug']) $response = $response['result'];
       if ($response->successful() && property_exists($response, 'token')) {
