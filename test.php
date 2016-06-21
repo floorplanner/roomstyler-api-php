@@ -1,4 +1,5 @@
 <?php
+
   ini_set('display_errors', 1);
   error_reporting(E_ALL);
   date_default_timezone_set('CET');
@@ -16,31 +17,46 @@
   require 'config.php';
   require 'api/rs_api.php';
 
-  // $api = new RoomstylerApi(['whitelabel' => $CONFIG['whitelabel_credentials'], 'user' => $CONFIG['user_credentials']]);
-
-
+  $api = new RoomstylerApi(['whitelabel' => $CONFIG['whitelabel_credentials'], 'user' => $CONFIG['user_credentials']]);
+  pp($api->user->errors->get());
 
   ################################################################################
   #                                                                              #
   #                                  ERRORS                                      #
   #                                                                              #
   ################################################################################
-  $dummy_array = [
-    'test',
-    'user' => [
-      'email' => [
-        'no @ symbol found',
-        'some other error'],
-      'password' => 'too short'],
-    'labeled string error' => 'test'];
-  $errors = new RoomstylerError($dummy_array, ['http_status' => 404, 'custom_http_errors_for' => 'user']);
-  pp($errors->get());
-  $errors->each(function($msg, $labels) {
-    echo '<hr />';
-    if (!empty($labels)){ echo join(' > ', $labels);
-    echo '<br />';}
-    echo $msg;
-  });
+
+  # raw example
+
+  # $dummy_array = [
+  # 'test',
+  # 'user' => [
+  #   'email' => [
+  #     'no @ symbol found',
+  #     'some other error'],
+  #   'password' => 'too short'],
+  # 'labeled string error' => 'test'];
+
+  # every object that comes out of the API, wether it be a RoomstylerUser or a RoomstylerRoom
+  # they will have an accessible property named "errors"
+  # this in itself is the object you see being constructed below with some additional
+  # background parameters you don't have to worry about
+
+  # $errors = new RoomstylerError($dummy_array, ['http_status' => 404, 'custom_http_errors_for' => 'user']);
+
+  # are there any errors at all
+  # pp($errors->any() ? 'true' : 'false');
+
+  # return the parsed json structure
+  # pp($errors->get());
+
+  # loop each error and pass in parent categories (hash keys) in order
+  # $errors->each(function($msg, $labels) {
+  # echo '<hr />';
+  # if (!empty($labels)){ echo join(' > ', $labels);
+  # echo '<br />';}
+  # echo $msg;
+  # });
 
   ################################################################################
   #                                                                              #

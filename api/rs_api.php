@@ -67,8 +67,8 @@
       $response = $this->users->login($name, $password);
 
       if ($this->_settings['debug']) $response = $response['result'];
-      if ($response->successful() && property_exists($response, 'token')) {
-        $this->_current_user = $response;
+      $this->_current_user = $response;
+      if (!$response->errors->any() && property_exists($response, 'token')) {
         $this->_settings['token'] = $response->token;
         return true;
       }
@@ -86,10 +86,6 @@
       return $this->_current_user != NULL;
     }
 
-    public function user() {
-      return $this->_current_user;
-    }
-
     # objects are returned based on properties being called.
     # these properties do not exist but if they have a Roomstyler{type} and
     # optionally a Roomstyler{type}Methods object they will be called here.
@@ -103,6 +99,9 @@
           $this->_whitelabeled = true;
           $this->set_user_agent();
           $out = $this;
+        break;
+        case 'user':
+          $out = $this->_current_user;
         break;
         case 'editor':
           $out = new RoomstylerEditor($this->_settings, $this->_whitelabeled);

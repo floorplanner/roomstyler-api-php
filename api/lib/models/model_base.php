@@ -4,16 +4,18 @@
 
     private $_custom_http_errors = [];
     private $_fields_set = false;
-    private $_errors = [];
     private $_http_status = 0;
-    private $_accessible_props = [];
+    private $_accessible_props = ['errors'];
+
+    private $errors;
+
     protected $_settings = [];
     protected $_whitelabeled = false;
 
-    public $id = NULL;
+    public $id;
 
     public function __construct($row, $settings, $whitelabeled, $errors = [], $status = 0, $parent_attrs = false) {
-      $this->_errors = new RoomstylerError((is_array($errors) ? $errors : []),
+      $this->errors = new RoomstylerError((is_array($errors) ? $errors : []),
                                            ['http_status' => $status,
                                             'custom_http_errors_for' => get_class($this)]);
       $this->_http_status = $status;
@@ -38,14 +40,6 @@
       # this is done in case the API changes in such a way that if a property is no longer available, NULL will be returned as a fallback instead of a Notice: error
       if (in_array($prop, $this->_accessible_props)) return $this->$prop;
       return NULL;
-    }
-
-    public function successful() {
-      return $this->_http_status < 300 && empty($this->_errors);
-    }
-
-    public function errors() {
-      return $this->_errors;
     }
 
     public function exists() {

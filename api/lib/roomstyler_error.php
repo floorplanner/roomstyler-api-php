@@ -22,7 +22,8 @@
       $this->_errors = $errors;
       if (isset($opts['http_status']) && isset($opts['custom_http_errors_for'])) {
         $type = strtolower(str_replace('Roomstyler', '', $opts['custom_http_errors_for']));
-        if (!array_key_exists($opts['http_status'], self::$http_errors[$type]))
+        if (!isset(self::$http_errors[$type]) ||
+            !isset(self::$http_errors[$type][$opts['http_status']]))
           $type = 'default';
         array_push($this->_errors, self::$http_errors[$type][$opts['http_status']]);
       }
