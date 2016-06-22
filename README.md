@@ -5,10 +5,6 @@ This is a PHP library that makes it easier to use the Roomstyler RESTful API.
 It is intended to be a wrapper for the API so that you, as user of the API
 will never have to write your own HTTP requests but instead can simply call a method to do it for you.
 
----
-This document is not yet finished, a lot of the documentation is still being worked on!
----
-
 ## <a name="heading_toc"></a> Table of contents
 
 * [Table of contents](#heading_toc)
