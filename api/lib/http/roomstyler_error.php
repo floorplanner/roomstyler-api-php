@@ -4,13 +4,13 @@
 
     private static $http_errors = [
       'default' => [
-        200 => 'OK',
-        201 => 'Created',
-        302 => 'Found',
-        403 => 'Forbidden',
-        404 => 'Not found',
-        422 => 'Unprocessable entity',
-        500 => 'Internal server error']
+        200 => 'HTTP 200 OK',
+        201 => 'HTTP 201 Created',
+        302 => 'HTTP 302 Found',
+        403 => 'HTTP 403 Forbidden',
+        404 => 'HTTP 404 Not found',
+        422 => 'HTTP 422 Unprocessable entity',
+        500 => 'HTTP 500 Internal server error']
     ];
 
     private $_errors = [];

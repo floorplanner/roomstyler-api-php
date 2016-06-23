@@ -135,20 +135,23 @@
       $plural_type = parent::to_plural($singular_type);
       $out = [];
       $errors = [];
+      $status = $res['status'];
 
       # some results have an 'errors' hash, others have a single 'error' hash
       # this is an attempt to gather errors in a consistent way
-      $status = $res['status'];
-      if (isset($res['errors']) && !is_array($res['errors'])) $errors = $res['errors'];
-      $errors = $res['errors'];
+      if (isset($res['errors']))
+        if (is_array($res['errors'])) $errors = $res['errors'];
+        else if (is_object($res['errors'])) $errors = get_object_vars($res['errors']);
+        else if (is_string($res['errors'])) $errors[] = $res['errors'];
+
       if (isset($res['error'])) array_push($errors, $res['error']);
-      $res = $res['body'];
 
       # wrap errors in RoomstylerError object, if an array is returned, we don't want
       # to create a new instance with the same errors.
       $errors = new RoomstylerError($errors, ['http_status' => $status,
                                               'custom_http_errors_for' => $singular_type]);
 
+      $res = $res['body'];
       # some results have a singular name root node, others may have a plural root node
       # this is another attempt to make the returned results consistent
       if (is_object($res))

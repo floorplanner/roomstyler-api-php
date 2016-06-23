@@ -280,7 +280,6 @@ print_r($user);
 
 RoomstylerUser Object
 (
-    [_fields_set:RoomstylerModelBase:private] => 1
     [_http_status:RoomstylerModelBase:private] => 200
     [_accessible_props:RoomstylerModelBase:private] => ['errors']
 
@@ -327,7 +326,7 @@ RoomstylerUser Object
 ?>
 ```
 
-Now all the properties that start with an underscore (`_`) are also `:protected` which means we can't even access them.
+Now all the properties that start with an underscore (`_`) are also either `:private` or `:protected` which means we can't access them.
 If you try accessing this freshly fetched users `_whitelabel` property `$user->_whitelabel` it would simply return `Notice:  Undefined property: RoomstylerUser::$_whitelabel`
 
 If you tried to access the public (and dynamically populated) `id` on the other hand, you would get either `NULL` or it's value if it's set.
@@ -337,9 +336,9 @@ Because of this, all properties that do not exist or aren't public (except `erro
 
 #### <a name="structure_object_roomstyler_model_base_methods"> Methods
 
-The `RoomstylerModelBase` class also provides us with some other methods we can use to see wether a request was `successful()`, the object actually `exists()` (not just an empty object - but actually having properties), or if the object in question has any `errors()`
+The `RoomstylerModelBase` class also provides us with some other methods we can use to see wether the object actually `exists()` (not just an empty object - but actually having properties), or if the object in question has any `errors`
 
-This is done (using our `$user` initiated on top) by calling `$user->errors()` for any json rendered errors, `$user->successful()` to check wether the request returned with a http status of less than `400` and no json errors or `$user->exists()` to check if any property is set at all.
+This is done (using our `$user` initiated on top) by calling `$user->errors` which will return a [`RoomstylerError`](#roomstyler_error) object or `$user->exists()` to check if any property is set at all.
 
 ## <a name="errors"></a> Errors
 

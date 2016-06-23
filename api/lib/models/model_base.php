@@ -2,7 +2,6 @@
 
   class RoomstylerModelBase extends RoomstylerBase {
 
-    private $_fields_set = false;
     private $_http_status = 0;
     private $_accessible_props = ['errors'];
 
@@ -26,7 +25,6 @@
           $this->$field = $value;
           $this->_accessible_props[] = $field;
         }
-        if (count($this->_accessible_props) > 0) $this->_fields_set = true;
       }
     }
 
@@ -38,7 +36,12 @@
     }
 
     public function exists() {
-      return $this->_http_status < 400 && $this->_fields_set;
+      $props_with_values = [];
+      
+      foreach ($this->_accessible_props as $prop)
+        if (!is_null($this->$prop)) $props_with_values[] = $prop;
+
+      return $this->_http_status < 400 && count($props_with_values) >= 2;
     }
 
   }
