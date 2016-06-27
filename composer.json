@@ -1,8 +1,11 @@
 {
   "name": "floorplanner/roomstyler-api-php",
   "description": "A PHP wrapper for the Roomstyler API.",
+  "type": "library",
+  "keywords": ["roomstyler", "room styler", "floorplanner", "floor planner", "api", "wrapper", "api wrapper"],
   "licence": "MIT",
   "require": {
-    "php": ">=5.0.0"
+    "php": ">=5.0.0",
+    "ext-curl": "*"
   }
 }
