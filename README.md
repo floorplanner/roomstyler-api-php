@@ -521,7 +521,7 @@ RoomstylerRoomMethods->index($params = []);
 ?>
 ```
 
-**Method signature and parameters: see [Fetching Rooms](#fetching_rooms)**
+**Method signature and parameters: see [Fetching Rooms](#fetch_rooms)**
 
 ##### <a name="find_specific_room"></a> Finding a specific room
 

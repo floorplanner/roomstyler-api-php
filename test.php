@@ -19,7 +19,7 @@
 
   $api = new RoomstylerApi(['whitelabel' => $CONFIG['whitelabel_credentials'], 'user' => $CONFIG['user_credentials']]);
 
-  pp($api->user->exists() ? 'true' : 'false');
+  # pp($api->user->exists() ? 'true' : 'false');
 
   ################################################################################
   #                                                                              #
