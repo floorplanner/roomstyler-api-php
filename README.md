@@ -9,6 +9,9 @@ will never have to write your own HTTP requests but instead can simply call a me
 
 * [Table of contents](#heading_toc)
 * [Installation](#heading_install)
+  * [Manual (using GUI)](#heading_install_manual)
+  * [Manual (using git + command line)](#heading_install_manual_git_cli)
+  * [Composer](#heading_install_composer)
 * [Getting started](#heading_getting_started)
   * [Anonymous API access](#api_access_anon)
   * [User API access](#api_access_user)
@@ -67,33 +70,43 @@ will never have to write your own HTTP requests but instead can simply call a me
 
 ## <a name="heading_install"></a> Installation
 
-I am going to assume here that you already have your PHP development stack installed or can atleast run PHP.
+### <a name="heading_install_manual"></a> Manual (using GUI)
+
+1. Go to [github.com/floorplanner/roomstyler-api-php](https://github.com/floorplanner/roomstyler-api-php)
+2. Click on the `Clone or download` button
+3. Select `Download ZIP`
+4. Extract the `.zip` and move or copy it to the root of the project
+5. Require `roomstyler-api-php-master/api/RoomstylerApi.php` in your application
+
+### <a name="heading_install_manual_git_cli"></a> Manual (using git and command line)
 
 ```
-~$ cd project-root
-project-root $ git clone git@github.com:SidOfc/roomstyler-api-php.git
+~ $ cd project-root
+project-root $ git clone git@github.com:floorplanner/roomstyler-api-php.git
 ```
 
-If all went well you should now have all the files to run the API.
-
-## <a name="heading_getting_started"></a> Getting started
-
-After cloning the project into your project's root directory you'll have to hook it into your application.
-This is done by requiring the `lib/rs_api.php` file which includes the `RoomstylerApi` class and all the other requires to different files.
-
-_index.php_
+This command clones the repository to `project-root/roomstyler-api-php/`, to require it add:
 
 ```php
 <?php
 
-  require 'lib/rs_api.php';
+  require 'roomstyler-api-php/api/RoomstylerApi.php'
 
 ?>
 ```
 
-After requiring this file you can get started by creating an instance of the API.
+### <a name="heading_install_composer"></a> Composer (using command line)
 
-#### <a name="api_access_anon"></a> Anonymous API access
+```
+~ $ cd composer-project-root
+composer-project-root $ composer require floorplanner/roomstyler-api-php
+```
+
+## <a name="heading_getting_started"></a> Getting Started
+
+This command downloads the package, dependencies and autoloads the API.
+
+### <a name="api_access_anon"></a> Anonymous API access
 
 When you want to read public data
 
@@ -108,7 +121,7 @@ When you want to read public data
 ?>
 ```
 
-#### <a name="api_access_user"></a> User API access
+### <a name="api_access_user"></a> User API access
 
 For personal use, read global data or perform actions on rooms as the signed in user (whitelabel users can also login)
 
@@ -124,7 +137,7 @@ For personal use, read global data or perform actions on rooms as the signed in 
 ?>
 ```
 
-#### <a name="api_access_wl"></a> Whitelabel API access
+### <a name="api_access_wl"></a> Whitelabel API access
 
 For when you want to read global data and read, write or modify your own whitelabel data
 
@@ -140,7 +153,7 @@ For when you want to read global data and read, write or modify your own whitela
 ?>
 ```
 
-#### <a name="api_access_god"></a> Godmode API access
+### <a name="api_access_god"></a> Godmode API access
 
 For the those who want to maximize their integration potential, this allows you to read and write and modify data of your whitelabel and your own rooms and perform actions on rooms as the signed in user
 
@@ -169,7 +182,7 @@ After doing this setup you should probably run a simple test to check if you can
 ?>
 ```
 
-#### <a name="heading_config_options"></a> More configuration options
+### <a name="heading_config_options"></a> More configuration options
 
 We just talked about the `user` and `whitelabel` options that can be passed to the constructor of the `RoomstylerApi` class but there are more options:
 
