@@ -228,7 +228,7 @@ The option you'll most likely be using is `debug` which allows you to take a pee
 This is a general overview of the structure of the core objects behind the API, I will try to explain what you can do and when you can do it as best as I can.
 The API is OOP only, which means you're going to have to apply a little bit of PHP's OOP but don't worry, it'll be easy!
 
-### <a name="structure_object_roomstyler_api"> RoomstylerApi
+### <a name="structure_object_roomstyler_api"></a> RoomstylerApi
 
 Starting with the `RoomstylerApi` class, this is the base for the entire API.
 It contains the settings and defaults that we've already discussed [here](#heading_config_options)
@@ -258,17 +258,17 @@ This `RoomstylerComponentMethods` class extends `RoomstylerMethodBase` and allow
 
 Essentially this means that you can call any property and get either an instance of a class back if it exists and is included, or a `Fatal Error: Class 'Roomstyler[NonExistentClass]Methods' not found in...`.
 
-### <a name="structure_object_roomstyler_method_base"> RoomstylerMethodBase
+### <a name="structure_object_roomstyler_method_base"></a> RoomstylerMethodBase
 
 This is the base class behind the scenes that allows you to use any and all of the `RoomstylerApi->_settings` within an instance of `Roomstyler[...]Methods`
 It's purpose is to provide a standard interface for actions you execute to **get** a dataset.
 
-### <a name="structure_object_roomstyler_model_base"> RoomstylerModelBase
+### <a name="structure_object_roomstyler_model_base"></a> RoomstylerModelBase
 
 This is the base class behind the returned results from the requests. You use the methods in `Roomstyler[...]Methods` to get a set of results (through some `find()`, `index()` or `search()` action)
 after which you get a single object or an array of objects back which you can then manipulate.
 
-#### <a name="structure_object_roomstyler_model_base_properties"> Properties
+#### <a name="structure_object_roomstyler_model_base_properties"></a> Properties
 
 This base class is actually more useful than the `RoomstylerMethodBase` since this one does the same and more, it also dynamically populates itself with properties returned from the API.
 
@@ -352,7 +352,7 @@ The same goes for all other properties. Normally you would get a notice if you c
 
 Because of this, all properties that do not exist or aren't public (except `errors` which is made public through `__get`) will return `NULL`.
 
-#### <a name="structure_object_roomstyler_model_base_methods"> Methods
+#### <a name="structure_object_roomstyler_model_base_methods"></a> Methods
 
 The `RoomstylerModelBase` class also provides us with some other methods we can use to see wether the object actually `exists()` (not just an empty object - but actually having properties), or if the object in question has any `errors`
 
