@@ -10,7 +10,7 @@
   },
   "autoload": {
     "files": [
-      "api/RoomstylerApi"
+      "api/RoomstylerApi.php"
     ]
   }
 }
