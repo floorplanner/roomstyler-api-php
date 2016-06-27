@@ -10,6 +10,11 @@ will never have to write your own HTTP requests but instead can simply call a me
 * [Table of contents](#heading_toc)
 * [Installation](#heading_install)
 * [Getting started](#heading_getting_started)
+  * [Anonymous API access](#api_access_anon)
+  * [User API access](#api_access_user)
+  * [Whitelabel API access](#api_access_wl)
+  * [Full API access](#api_access_god)
+  * [Settings](#heading_config_options)
 * [Structure](#heading_structure)
   * [RoomstylerApi](#structure_object_roomstyler_api)
   * [RoomstylerMethodBase](#structure_object_roomstyler_method_base)
@@ -88,7 +93,7 @@ _index.php_
 
 After requiring this file you can get started by creating an instance of the API.
 
-#### Anonymous API access
+#### <a name="api_access_anon"></a> Anonymous API access
 
 When you want to read public data
 
@@ -103,7 +108,7 @@ When you want to read public data
 ?>
 ```
 
-#### User API access
+#### <a name="api_access_user"></a> User API access
 
 For personal use, read global data or perform actions on rooms as the signed in user (whitelabel users can also login)
 
@@ -119,7 +124,7 @@ For personal use, read global data or perform actions on rooms as the signed in 
 ?>
 ```
 
-#### Whitelabel API access
+#### <a name="api_access_wl"></a> Whitelabel API access
 
 For when you want to read global data and read, write or modify your own whitelabel data
 
@@ -135,7 +140,7 @@ For when you want to read global data and read, write or modify your own whitela
 ?>
 ```
 
-#### Godmode API access
+#### <a name="api_access_god"></a> Godmode API access
 
 For the those who want to maximize their integration potential, this allows you to read and write and modify data of your whitelabel and your own rooms and perform actions on rooms as the signed in user
 
