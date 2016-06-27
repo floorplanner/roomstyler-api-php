@@ -7,5 +7,5 @@
   require 'api/rs_api.php';
 
   $api = new RoomstylerApi(['user' => $CONFIG['user_credentials']]);
-  $user = $api->user->find(972691);
+  $user = $api->users->find(972691);
 ?>
