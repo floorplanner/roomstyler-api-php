@@ -1,4 +1,5 @@
 {
   "name": "floorplanner/roomstyler-api-php",
-  "description": "A PHP wrapper for the Roomstyler API."
+  "description": "A PHP wrapper for the Roomstyler API.",
+  "licence": "MIT"
 }
