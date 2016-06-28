@@ -104,8 +104,6 @@ composer-project-root $ composer require floorplanner/roomstyler-api-php
 
 ## <a name="heading_getting_started"></a> Getting Started
 
-This command downloads the package, dependencies and autoloads the API.
-
 ### <a name="api_access_anon"></a> Anonymous API access
 
 When you want to read public data
