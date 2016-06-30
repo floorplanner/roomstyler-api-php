@@ -4,8 +4,6 @@
 
     private static $http_errors = [
       'default' => [
-        200 => 'HTTP 200 OK',
-        201 => 'HTTP 201 Created',
         302 => 'HTTP 302 Found',
         403 => 'HTTP 403 Forbidden',
         404 => 'HTTP 404 Not found',
@@ -17,12 +15,13 @@
 
     public function __construct(array $errors, array $opts = []) {
       $this->_errors = $errors;
-      if (isset($opts['http_status']) && isset($opts['custom_http_errors_for'])) {
+      if (isset($opts['http_status']) && $opts['http_status'] >= 300 && isset($opts['custom_http_errors_for'])) {
         $type = strtolower(str_replace('Roomstyler', '', $opts['custom_http_errors_for']));
         if (!isset(self::$http_errors[$type]) ||
             !isset(self::$http_errors[$type][$opts['http_status']]))
           $type = 'default';
-        array_push($this->_errors, self::$http_errors[$type][$opts['http_status']]);
+        if (isset(self::$http_errors[$type][$opts['http_status']]))
+          array_push($this->_errors, self::$http_errors[$type][$opts['http_status']]);
       }
     }
 
