@@ -957,7 +957,7 @@ user access.
 
 This function also returns the token needed to use in other requests such as to comment or love a room.
 
-Also, if you're already logged in you do not need to use this function this.
+Also, if you're already logged in you do not need to use this function.
 
 **PHP snippet**
 
