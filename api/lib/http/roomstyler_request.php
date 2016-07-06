@@ -31,12 +31,7 @@
     public function send($type, $path, array $args = [], $method = self::GET, $auth_type = self::AUTH_ALL) {
       $parent_attrs = isset($this->_settings['parent_attrs']) ? $this->_settings['parent_attrs'] : [];
 
-      if ($method == self::GET) {
-        foreach ($args as $key => $value) {
-          unset($args[$key]);
-          $args[urlencode($key)] = urlencode($value);
-        }
-      } else if ($auth_type != self::AUTH_API && $this->_settings['token'])
+      if ($auth_type != self::AUTH_API && $this->_settings['token'])
         $args = array_merge($args, ['token' => $this->_settings['token']]);
 
       # if the request isn't GET then we don't want to add any query params
@@ -69,12 +64,7 @@
       if ($this->_settings['prefix']) $base_path .= $this->_settings['prefix'];
       $url = $base_path . '/' . $path;
 
-      if ($args) {
-        $query = [];
-        foreach ($args as $key => $value) $query[] = $key . '=' . $value;
-        return ($url . '?' . join('&', $query));
-      }
-
+      if ($args) return ($url . '?' . http_build_query($args));
       return $url;
     }
 
@@ -91,16 +81,15 @@
         CURLOPT_TIMEOUT => $this->_settings['timeout'],
         CURLOPT_USERAGENT => $this->_settings['user_agent']]);
 
-      # request authentication through http basic
+      # request authentication through http basic, we don't always want to do this since some requests crash when accessed through multiple sources
       # here we need to filter for requests that only allow "normal authenticated user" access
-      # this is possible with a flag perhaps?
       if ($auth_type != self::AUTH_USER && $this->_settings['whitelabel']) {
         curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
         curl_setopt($curl, CURLOPT_USERPWD, join(':', $this->_settings['whitelabel']));
       }
 
       # request method handling is done prior to this step.
-      # if a request needs to be post (e.g. on DELETE, PATCH etc...) it will be
+      # if a request needs to be post (e.g. on DELETE, PATCH etc...) it will use curls custom request option
       if ($mtd == self::POST) curl_setopt($curl, CURLOPT_POST, true);
       else if ($mtd != self::GET || $mtd != self::POST) curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $mtd);
 

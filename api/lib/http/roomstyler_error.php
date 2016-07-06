@@ -5,10 +5,15 @@
     private static $http_errors = [
       'default' => [
         302 => 'HTTP 302 Found',
+        304 => 'HTTP 304 Not Modified',
+        400 => 'HTTP 400 Bad Request',
+        401 => 'HTTP 401 Not Authorized',
         403 => 'HTTP 403 Forbidden',
-        404 => 'HTTP 404 Not found',
-        422 => 'HTTP 422 Unprocessable entity',
-        500 => 'HTTP 500 Internal server error']
+        404 => 'HTTP 404 Not Found',
+        422 => 'HTTP 422 Unprocessable Entity',
+        500 => 'HTTP 500 Internal Server Error',
+        502 => 'HTTP 502 Bad Gateway',
+        503 => 'HTTP 503 Service Unavailable']
     ];
 
     private $_errors = [];
