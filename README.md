@@ -34,6 +34,7 @@ will never have to write your own HTTP requests but instead can simply call a me
     * [Find](#find_specific_room)
     * [Search](#searching_rooms)
     * [Panorama's](#fetch_panoramas)
+    * [Panorama](#fetch_panorama)
     * [Comment](#comment_on_room)
     * [Toggle love](#love_a_room)
     * [Change owner](#change_room_owner)
