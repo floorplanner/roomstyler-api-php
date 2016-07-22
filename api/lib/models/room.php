@@ -43,13 +43,17 @@
 
     public function render($mode = '', $params = []) {
       $params = array_merge(['width' => 1920, 'height' => 1080], $params);
-      if ($mode == '2d') $mode = "_$mode";
-      else $mode = '';
-      return (new RoomstylerRequest($this->_settings, $this->_whitelabeled))->send('RoomstylerRoom', "rooms/{$this->id}/render$mode", $params, RoomstylerRequest::POST);
+      $mode = 'render';
+      if ($mode == '2d' || $mode == 'panorama') $mode .= "_$mode";
+      return (new RoomstylerRequest($this->_settings, $this->_whitelabeled))->send('RoomstylerRoom', "rooms/{$this->id}/{$mode}", $params, RoomstylerRequest::POST);
     }
 
     public function chown($user_id) {
       return (new RoomstylerRequest($this->_settings, $this->_whitelabeled))->send('RoomstylerRoom', "rooms/{$this->id}/chown", ['user_id' => $user_id], RoomstylerRequest::POST, RoomstylerRequest::AUTH_API);
+    }
+
+    public function panorama($params = []) {
+      return (new RoomstylerRequest($this->_settings, $this->_whitelabeled))->send('RoomstylerRoomPanorama', "rooms/{$this->id}/panorama", $params);
     }
 
   }

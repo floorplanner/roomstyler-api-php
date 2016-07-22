@@ -24,6 +24,7 @@
   require_once 'lib/models/timeframe.php';
   require_once 'lib/models/component.php';
   require_once 'lib/models/material.php';
+  require_once 'lib/models/panorama.php';
 
   require_once 'lib/methods/method_base.php';
   require_once 'lib/methods/user.php';

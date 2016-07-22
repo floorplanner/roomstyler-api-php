@@ -620,6 +620,27 @@ Lets say Let's initialize a `$room` variable and use that in the following reque
 ```php
 <?php $room = $rsapi->rooms->find(123456); ?>
 ```
+##### <a name="fetch_panorama"></a> Fetching a room panorama
+
+**PHP snippet**
+
+```php
+<?php
+  print_r($room->panorama());
+  # => RoomstylerRoomPanorama{}
+?>
+```
+
+**Method signature**
+
+```
+RoomstylerRoom->panorama($params = []);
+```
+
+**Parameters**
+
+* `$params` - Optional (Defaults do get set) - An array containing any the following keys:
+  * `krpano_url` - When supplied, adds a krpano_url property containing a template url to use for rendering a cube image in krpano.
 
 ##### <a name="comment_on_room"></a> Comment on a room
 
@@ -855,7 +876,7 @@ RoomstylerRoom->remove_tags($tags)
 * `$tags` - Required - An array of individual tags or a string of comma-seperated tags
 
 
-##### <a name="render_room"></a> Render room in 2D/3D
+##### <a name="render_room"></a> Render room in 2D, 3D or panorama
 
 **PHP snippet**
 
@@ -874,11 +895,16 @@ RoomstylerRoom->render($mode = '', $params = [])
 
 **Parameters**
 
-* `$mode` - Optional (should be nothing or `2d`) - Specify rendering method, if left empty it will render in 3D
+* `$mode` - Optional (Either `2d` or `panorama`, any other strings will be ignored) - Specify rendering method, if left empty it will render in 3D, otherwise it will render either `2d` or `panorama`
 * `$params` - An array containing any the following keys:
   * `width` - Optional (Default value of `1920`) - Width at which to render room
   * `height` - Optional (Default value of `1080`) - Height at which to render room
-  * `callback` - Optional (Required if `$mode` is `2d`) - A callback url that will receive a `POST` request when rendering is done
+  * `callback` - Optional (Required if `$mode` is set.) - A callback url that will receive a `POST` request when rendering is done
+
+**Additional note(s)**
+
+Currently, `callback` is required for `panorama` too however no `POST` callback will be executed yet.
+It's in the documentation so that the ability to render panorama's is available, a `callback` will be required in the future as well.
 
 ### <a name="heading_users"></a> Users
 

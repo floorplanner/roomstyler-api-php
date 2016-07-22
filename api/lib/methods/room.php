@@ -19,7 +19,7 @@
     }
 
     public function panoramas($params = []) {
-      $params = array_merge(['limit' => 50, 'page' => 1], $params);
+      $params = array_merge(['limit' => 50], $params);
       return (new RoomstylerRequest($this->_settings, $this->_whitelabeled))->send('RoomstylerRoom', "rooms/panoramas", $params);
     }
 
