@@ -42,10 +42,12 @@
     }
 
     public function render($mode = '', $params = []) {
-      $params = array_merge(['width' => 1920, 'height' => 1080], $params);
-      $mode = 'render';
-      if ($mode == '2d' || $mode == 'panorama') $mode .= "_$mode";
-      return (new RoomstylerRequest($this->_settings, $this->_whitelabeled))->send('RoomstylerRoom', "rooms/{$this->id}/{$mode}", $params, RoomstylerRequest::POST);
+      $m = 'render';
+      $mode = strtolower($mode);
+
+      if (in_array($mode, ['2d', 'panorama', 'hq'])) $m .= "_$mode";
+
+      return (new RoomstylerRequest($this->_settings, $this->_whitelabeled))->send('RoomstylerRoom', "rooms/{$this->id}/{$m}", $params, RoomstylerRequest::POST);
     }
 
     public function chown($user_id) {

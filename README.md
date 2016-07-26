@@ -1,7 +1,7 @@
 # Roomstyler PHP API
 
 ---
-This is a PHP library that makes it easier to use the Roomstyler RESTful API.
+This is a PHP library that makes it easier to use the [Roomstyler RESTful API](http://floorplanner.io/docs/roomstyler-api).
 It is intended to be a wrapper for the API so that you, as user of the API
 will never have to write your own HTTP requests but instead can simply call a method to do it for you.
 
@@ -70,6 +70,9 @@ will never have to write your own HTTP requests but instead can simply call a me
   * [Embed](#embed_3dplanner)
 
 ## <a name="heading_install"></a> Installation
+
+Based on [the roomstyler RESTful API](http://floorplanner.io/docs/roomstyler-api), should anything be/remain unclear after reading the docs, check the documentation on there as well to see if it is more clear.
+Also, this is not a 1-on-1 copy of the API, some method calls are grouped (`render` for instance can do `panorama`, `hq` and `2d` aside from the default `3d`) or have a slightly more convenient way of adding parameters.
 
 ### <a name="heading_install_manual"></a> Manual (using GUI)
 
@@ -877,7 +880,7 @@ RoomstylerRoom->remove_tags($tags)
 * `$tags` - Required - An array of individual tags or a string of comma-seperated tags
 
 
-##### <a name="render_room"></a> Render room in 2D, 3D or panorama
+##### <a name="render_room"></a> Render room in 2D, 3D, HD 3D or panorama
 
 **PHP snippet**
 
@@ -896,11 +899,12 @@ RoomstylerRoom->render($mode = '', $params = [])
 
 **Parameters**
 
-* `$mode` - Optional (Either `2d` or `panorama`, any other strings will be ignored) - Specify rendering method, if left empty it will render in 3D, otherwise it will render either `2d` or `panorama`
+* `$mode` - Optional (Either `2d`, `panorama` or `hq`, any other strings will be ignored) - Specify rendering method, if left empty it will render in 3D, otherwise it will render either `2d`, `panorama` or `hq`
 * `$params` - An array containing any the following keys:
-  * `width` - Optional (Default value of `1920`) - Width at which to render room
-  * `height` - Optional (Default value of `1080`) - Height at which to render room
-  * `callback` - Optional (Required if `$mode` is set.) - A callback url that will receive a `POST` request when rendering is done
+  * `width` - Optional (Default value of `960` for normal and `2d` renders, `1920` for `hq` and ignored for `panorama`) - Width at which to render room
+  * `height` - Optional (Default value of `540` for normal and `2d` renders, `1920` for `hq` and ignored for `panorama`) - Height at which to render room
+  * `size` - Optional (Default value of `1080` for panorama, ignored for the rest) - Size at which to render cube images for panorama
+  * `callback` - Optional (Required if `$mode` is set to `2d`.) - A callback url that will receive a `POST` request when rendering is done
 
 **Additional note(s)**
 
