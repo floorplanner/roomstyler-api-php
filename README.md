@@ -906,11 +906,6 @@ RoomstylerRoom->render($mode = '', $params = [])
   * `size` - Optional (Default value of `1080` for panorama, ignored for the rest) - Size at which to render cube images for panorama
   * `callback` - Optional (Required if `$mode` is set to `2d`.) - A callback url that will receive a `POST` request when rendering is done
 
-**Additional note(s)**
-
-Currently, `callback` is required for `panorama` too however no `POST` callback will be executed yet.
-It's in the documentation so that the ability to render panorama's is available, a `callback` will be required in the future as well.
-
 ### <a name="heading_users"></a> Users
 
 #### Aggregation, Creation and Login
