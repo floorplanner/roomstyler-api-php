@@ -38,7 +38,7 @@
 
   class RoomstylerApi extends RoomstylerBase {
 
-    const VERSION = "1.0";
+    const VERSION = "1.4";
 
     private $_current_user = NULL;
     private $_whitelabeled = false;
