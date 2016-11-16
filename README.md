@@ -94,7 +94,7 @@ This command clones the repository to `project-root/roomstyler-api-php/`, to req
 ```php
 <?php
 
-  require 'roomstyler-api-php/api/RoomstylerApi.php'
+  require 'roomstyler-api-php/api/RoomstylerApi.php';
 
 ?>
 ```
@@ -115,7 +115,7 @@ When you want to read public data
 ```php
 <?php
 
-  require 'lib/rs_api.php';
+  require 'roomstyler-api-php/api/RoomstylerApi.php';
 
   # can read all public data
   $rsapi = new RoomstylerApi();
@@ -130,7 +130,7 @@ For personal use, read global data or perform actions on rooms as the signed in 
 ```php
 <?php
 
-  require 'lib/rs_api.php';
+  require 'roomstyler-api-php/api/RoomstylerApi.php';
 
   # can read all public data
   # can perform actions on rooms such as placing a comment or toggling a like
@@ -146,7 +146,7 @@ For when you want to read global data and read, write or modify your own whitela
 ```php
 <?php
 
-  require 'lib/rs_api.php';
+  require 'roomstyler-api-php/api/RoomstylerApi.php';
 
   # can read all public data
   # can read all whitelabel data
@@ -162,7 +162,7 @@ For the those who want to maximize their integration potential, this allows you 
 ```php
 <?php
 
-  require 'lib/rs_api.php';
+  require 'roomstyler-api-php/api/RoomstylerApi.php';
 
   # can read all public data
   # can read all whitelabel data
